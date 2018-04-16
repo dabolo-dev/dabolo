@@ -56,9 +56,10 @@ public class UserService implements IUserService {
 					if(Boolean.parseBoolean(user.get(User.ACTIVE).toString())) {
 						user.remove(User.PRIVATE_STR);
 						user.remove(User.ACTIVE);
+						return user;
 					}
 					
-					return user;
+					
 					
 				}
 			}
