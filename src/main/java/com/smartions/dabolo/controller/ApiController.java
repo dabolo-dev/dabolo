@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +18,7 @@ import com.smartions.dabolo.service.IUserService;
 public class ApiController {
 	@Autowired
 	IUserService userService;
+	
 	@GetMapping(value="/")
 	public String test() {
 		return "hello world1235";
@@ -38,8 +40,14 @@ public class ApiController {
 		map.put("response", "这是中文");
 		return map;
 	}
-	@GetMapping(value="/user")
-	public List<User> getUserList(){
-		return userService.getAllUser();
+	
+	@GetMapping(value="/user/signup")
+	public Map<String,Object> signUp(@RequestParam(value="password") String password){
+		return userService.signUp(password);
+	}
+	
+	@GetMapping(value="/user/signin")
+	public Map<String,Object> signIn(@RequestParam(value="password") String password,@RequestParam(value="userid") String userId){
+		return userService.signIn(userId, password);
 	}
 }

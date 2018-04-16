@@ -1,9 +1,8 @@
 package com.smartions.dabolo.service;
 
-import java.util.List;
-
-import com.smartions.dabolo.model.User;
+import java.util.Map;
 
 public interface IUserService {
-	public List<User> getAllUser();
+	public Map<String,Object> signUp(String passwd);
+	public Map<String,Object> signIn(String userId,String password);
 }

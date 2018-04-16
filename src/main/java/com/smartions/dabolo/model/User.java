@@ -1,27 +1,11 @@
 package com.smartions.dabolo.model;
 
-import java.io.Serializable;
+public class User  {
+	public static final String USER_ID="user_id";
+	public static final String PUBLIC_STR="user_pub";
+	public static final String PRIVATE_STR="user_pri_en";
+	public static final String ACTIVE="user_active";
 
-public class User implements Serializable {
-	private String id;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@Override
-	public int hashCode() {
-		// TODO Auto-generated method stub
-		return super.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return super.equals(obj);
-	}
+	
+	
 }

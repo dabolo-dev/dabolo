@@ -1,10 +1,12 @@
 package com.smartions.dabolo.mapper;
 
-import java.util.List;
+import java.util.Map;
 
-import com.smartions.dabolo.model.User;
+import org.apache.ibatis.annotations.Param;
+
 
 
 public interface UserMapper {
-	public List<User> findUserInfo();
+	public int signUp(Map<String,Object> user);
+	public Map<String,Object> getUser(@Param("userId") String userId);
 }

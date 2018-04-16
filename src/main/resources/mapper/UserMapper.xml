@@ -2,9 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
 <mapper namespace="com.smartions.dabolo.mapper.UserMapper">  
    <resultMap type="java.util.HashMap" id="allResult"></resultMap>
-  <select id="findUserInfo" resultMap="allResult">  
-    select * from Account;  
-  </select>  
+  <insert id="signUp" parameterType="hashmap">
+  	insert into User(user_id,user_pub,user_pri_en) values(#{user_id},#{user_pub},#{user_pri_en});
+  </insert>
+  <select id="getUser" resultType="hashMap">
+  	select * from User where user_id=#{userId}
+  </select>
  
    
 </mapper>  
