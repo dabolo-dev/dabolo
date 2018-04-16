@@ -71,4 +71,30 @@ public class UserService implements IUserService {
 		return new HashMap<String,Object>();
 	}
 
+	@Override
+	public int updatePassword(String userId, String oldPassword, String newPassword) {
+		// TODO Auto-generated method stub
+		Map<String, Object> user=userMapper.getUser(userId);
+		try {
+			if(userId.equals(RSAUtils.md5(user.get(User.PUBLIC_STR).toString()))) {//验证用户id与公钥匹配。
+				String privateStr=AES.decrypt(user.get(User.PRIVATE_STR).toString(), oldPassword);
+				if(RSAUtils.verify(oldPassword, user.get(User.PUBLIC_STR).toString(), RSAUtils.signStr(oldPassword, privateStr))) {//验证公钥与解密的私钥是否匹配
+					if(Boolean.parseBoolean(user.get(User.ACTIVE).toString())) {
+						String privateEncode=AES.encrypt(privateStr.getBytes(), newPassword);
+						user.put(User.PRIVATE_STR, privateEncode);
+						return userMapper.updatePassword(user);
+					}
+					
+					
+					
+				}
+			}
+				
+			
+		} catch (Exception e) {
+			
+		}
+		return 0;
+	}
+
 }

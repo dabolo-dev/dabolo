@@ -8,6 +8,8 @@
   <select id="getUser" resultType="hashMap">
   	select * from User where user_id=#{userId}
   </select>
- 
+ <update id="updatePassword" parameterType="hashmap">
+ 	update User set user_pri_en=#{user_pri_en} where user_id=#{user_id} and user_active=1;
+ </update>
    
 </mapper>  

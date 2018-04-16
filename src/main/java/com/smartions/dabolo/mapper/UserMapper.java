@@ -9,4 +9,5 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper {
 	public int signUp(Map<String,Object> user);
 	public Map<String,Object> getUser(@Param("userId") String userId);
+	public int updatePassword(Map<String,Object> user);
 }

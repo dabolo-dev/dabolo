@@ -1,17 +1,14 @@
 package com.smartions.dabolo.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smartions.dabolo.model.User;
 import com.smartions.dabolo.service.IUserService;
 
 @RestController
@@ -49,5 +46,13 @@ public class ApiController {
 	@GetMapping(value="/user/signin")
 	public Map<String,Object> signIn(@RequestParam(value="password") String password,@RequestParam(value="userid") String userId){
 		return userService.signIn(userId, password);
+	}
+	
+	@GetMapping(value="/user/updatepassword")
+	public Map<String,Object> updatePassword(@RequestParam(value="oldpassword") String oldPassword,@RequestParam(value="newpassword") String newPassword,@RequestParam(value="userid") String userId){
+		Map<String,Object> result=new HashMap<String,Object>();
+		result.put("flag", userService.updatePassword(userId, oldPassword, newPassword));
+		return result;
+		
 	}
 }
