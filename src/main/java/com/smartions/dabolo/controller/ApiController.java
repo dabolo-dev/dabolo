@@ -60,6 +60,7 @@ public class ApiController {
 		return result;
 		
 	}
+
 	@GetMapping(value="/activity")
 	public List<Activity> getActivityList(){
 		return activityService.getActivityList();
@@ -67,5 +68,10 @@ public class ApiController {
 	@GetMapping(value="/activityinfo/{id}")
 	public Activity getActivityInfo(@PathVariable(value="id") long id){
 		return activityService.getActivityInfo(id);
+	}
+	@GetMapping(value="/wechat/connect")
+	public Map<String,Object> wechcatConnect(@RequestParam(value="openid") String openId,@RequestParam(value="unionid") String unionId){
+		return userService.wechatConnect(openId, unionId);
+
 	}
 }
