@@ -8,7 +8,7 @@ public class Activity implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int id;
+	private long id;
 	private String title;//活动名称
 	private String starttime;//开始时间
 	private String endtime;//结束时间
@@ -24,10 +24,10 @@ public class Activity implements Serializable{
 	
 	private String status;//状态
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	public String getTitle() {

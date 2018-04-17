@@ -33,4 +33,18 @@ public class ActivityService implements IActivityService {
 		return list;
 	}
 
+	@Override
+	public Activity getActivityInfo(long id) {
+		Activity activity2 = new Activity();
+		activity2.setId(1);
+		activity2.setCoverpath("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524472257&di=8142652bde90d3ddcd7207e6dcfe87ba&imgtype=jpg&er=1&src=http%3A%2F%2Fscimg.jb51.net%2Fallimg%2F140730%2F11-140I01132494T.jpg");
+		activity2.setStarttime("2018-5-11");
+		activity2.setEndtime("2018-5-12");
+		activity2.setQty(40);
+		activity2.setTitle("5月12日打篮球");
+		activity2.setStatus("进行中");
+		activity2.setAddress("江苏省苏州市工业园区");
+		return activity2;
+	}
+
 }
