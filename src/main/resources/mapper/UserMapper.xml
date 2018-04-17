@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>  
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
-<mapper namespace="com.smartions.dabolo.mapper.UserMapper">  
-   <resultMap type="java.util.HashMap" id="allResult"></resultMap>
-  <insert id="signUp" parameterType="hashmap">
-  	insert into User(user_id,user_pub,user_pri_en) values(#{user_id},#{user_pub},#{user_pri_en});
-  </insert>
-  <select id="getUser" resultType="hashMap">
-  	select * from User where user_id=#{userId}
-  </select>
- <update id="updatePassword" parameterType="hashmap">
- 	update User set user_pri_en=#{user_pri_en} where user_id=#{user_id} and user_active=1;
- </update>
-   
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smartions.dabolo.mapper.UserMapper">
+	<resultMap type="java.util.HashMap" id="allResult"></resultMap>
+	<insert id="signUp" parameterType="hashmap">
+		insert into User(user_id,user_pub,user_pri_en)
+		values(#{user_id},#{user_pub},#{user_pri_en});
+	</insert>
+	<select id="getUser" resultType="hashMap">
+		select * from User where user_id=#{userId}
+	</select>
+	<update id="updatePassword" parameterType="hashmap">
+		update User set user_pri_en=#{user_pri_en} where user_id=#{user_id} and
+		user_active=1;
+	</update>
+	<select id="getUserIdByWechatOpenId" resultType="string">
+		select user_id from Third where third_type='wechat' and third_id=#{openId};
+	</select>
+	<insert id="bindThirdAndUser" parameterType="hashmap">
+		insert into Third(third_type,third_id,user_id) values(#{third_type},#{third_id},#{user_id});
+	</insert>
 </mapper>  

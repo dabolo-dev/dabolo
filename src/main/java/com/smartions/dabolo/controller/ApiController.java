@@ -55,4 +55,8 @@ public class ApiController {
 		return result;
 		
 	}
+	@GetMapping(value="/wechat/connect")
+	public Map<String,Object> wechcatConnect(@RequestParam(value="openid") String openId,@RequestParam(value="unionid") String unionId){
+		return userService.wechatConnect(openId, unionId);
+	}
 }

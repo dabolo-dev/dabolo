@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.smartions.dabolo.mapper.UserMapper;
+import com.smartions.dabolo.model.Third;
 import com.smartions.dabolo.model.User;
 import com.smartions.dabolo.utils.AES;
 import com.smartions.dabolo.utils.RSAUtils;
@@ -35,7 +36,7 @@ public class UserService implements IUserService {
 			user.put(User.PUBLIC_STR, userPublic);
 			user.put(User.PRIVATE_STR, privateEncode);
 			userMapper.signUp(user);
-			user=userMapper.getUser(userId);
+			user = userMapper.getUser(userId);
 			user.remove(User.PRIVATE_STR);
 			user.remove(User.ACTIVE);
 			return user;
@@ -48,53 +49,74 @@ public class UserService implements IUserService {
 
 	@Override
 	public Map<String, Object> signIn(String userId, String password) {
-		Map<String, Object> user=userMapper.getUser(userId);
+		Map<String, Object> user = userMapper.getUser(userId);
 		try {
-			if(userId.equals(RSAUtils.md5(user.get(User.PUBLIC_STR).toString()))) {//验证用户id与公钥匹配。
-				String privateStr=AES.decrypt(user.get(User.PRIVATE_STR).toString(), password);
-				if(RSAUtils.verify(password, user.get(User.PUBLIC_STR).toString(), RSAUtils.signStr(password, privateStr))) {//验证公钥与解密的私钥是否匹配
-					if(Boolean.parseBoolean(user.get(User.ACTIVE).toString())) {
+			if (userId.equals(RSAUtils.md5(user.get(User.PUBLIC_STR).toString()))) {// 验证用户id与公钥匹配。
+				String privateStr = AES.decrypt(user.get(User.PRIVATE_STR).toString(), password);
+				if (RSAUtils.verify(password, user.get(User.PUBLIC_STR).toString(),
+						RSAUtils.signStr(password, privateStr))) {// 验证公钥与解密的私钥是否匹配
+					if (Boolean.parseBoolean(user.get(User.ACTIVE).toString())) {
 						user.remove(User.PRIVATE_STR);
 						user.remove(User.ACTIVE);
+						long time = System.currentTimeMillis() + 45 * 60 * 1000;
+						user.put("timeout", time);
+						user.put("token", RSAUtils.signStr(String.valueOf(time), privateStr));
 						return user;
 					}
-					
-					
-					
+
 				}
 			}
-				
-			
+
 		} catch (Exception e) {
-			
+
 		}
-		return new HashMap<String,Object>();
+		return new HashMap<String, Object>();
 	}
 
 	@Override
+	@Transactional
 	public int updatePassword(String userId, String oldPassword, String newPassword) {
 		// TODO Auto-generated method stub
-		Map<String, Object> user=userMapper.getUser(userId);
+		Map<String, Object> user = userMapper.getUser(userId);
 		try {
-			if(userId.equals(RSAUtils.md5(user.get(User.PUBLIC_STR).toString()))) {//验证用户id与公钥匹配。
-				String privateStr=AES.decrypt(user.get(User.PRIVATE_STR).toString(), oldPassword);
-				if(RSAUtils.verify(oldPassword, user.get(User.PUBLIC_STR).toString(), RSAUtils.signStr(oldPassword, privateStr))) {//验证公钥与解密的私钥是否匹配
-					if(Boolean.parseBoolean(user.get(User.ACTIVE).toString())) {
-						String privateEncode=AES.encrypt(privateStr.getBytes(), newPassword);
+			if (userId.equals(RSAUtils.md5(user.get(User.PUBLIC_STR).toString()))) {// 验证用户id与公钥匹配。
+				String privateStr = AES.decrypt(user.get(User.PRIVATE_STR).toString(), oldPassword);
+				if (RSAUtils.verify(oldPassword, user.get(User.PUBLIC_STR).toString(),
+						RSAUtils.signStr(oldPassword, privateStr))) {// 验证公钥与解密的私钥是否匹配
+					if (Boolean.parseBoolean(user.get(User.ACTIVE).toString())) {
+						String privateEncode = AES.encrypt(privateStr.getBytes(), newPassword);
 						user.put(User.PRIVATE_STR, privateEncode);
 						return userMapper.updatePassword(user);
 					}
-					
-					
-					
+
 				}
 			}
-				
-			
+
 		} catch (Exception e) {
-			
+
 		}
 		return 0;
+	}
+
+	@Override
+	@Transactional
+	public Map<String, Object> wechatConnect(String openId, String unionId) {
+		// TODO Auto-generated method stub
+		// 通过openid去查询是否用户存在
+		String userId = userMapper.getUserIdByWechatOpenId(openId);
+		if (userId == null) {
+			// 不存在注册新用户,以unionId作为密码
+			Map<String, Object> user = signUp(unionId);
+			userId = user.get(User.USER_ID).toString();
+			Map<String, Object> third=new HashMap<String,Object>();
+			third.put(Third.USER_ID, userId);
+			third.put(Third.THIRD_ID, openId);
+			third.put(Third.THIRD_TYPE, "wechat");
+			userMapper.bindThirdAndUser(third);
+		}
+		// 通过用户id和unionId登录
+
+		return signIn(userId, unionId);
 	}
 
 }
