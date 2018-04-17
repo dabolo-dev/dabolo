@@ -1,6 +1,7 @@
 package com.smartions.dabolo.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smartions.dabolo.model.Activity;
+import com.smartions.dabolo.service.IActivityService;
 import com.smartions.dabolo.service.IUserService;
 
 @RestController
 public class ApiController {
 	@Autowired
 	IUserService userService;
+	@Autowired
+	IActivityService activityService;
 	
 	@GetMapping(value="/")
 	public String test() {
@@ -54,5 +59,9 @@ public class ApiController {
 		result.put("flag", userService.updatePassword(userId, oldPassword, newPassword));
 		return result;
 		
+	}
+	@GetMapping(value="/activity")
+	public List<Activity> getActivityList(){
+		return activityService.getActivityList();
 	}
 }
