@@ -64,4 +64,8 @@ public class ApiController {
 	public List<Activity> getActivityList(){
 		return activityService.getActivityList();
 	}
+	@GetMapping(value="/activityinfo/{id}")
+	public Activity getActivityInfo(@PathVariable(value="id") long id){
+		return activityService.getActivityInfo(id);
+	}
 }
