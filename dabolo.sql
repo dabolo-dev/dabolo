@@ -12,7 +12,7 @@ CREATE TABLE `Activity` (
   `activity_effect` bit(1) NOT NULL DEFAULT b'1' COMMENT '活动是否有效',
   `activity_index` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '活动显示优先级',
   `activity_creator` char(32) NOT NULL COMMENT '活动组织者',
-  `activity_sign_up_start` datetime NOT NULL COMMENT '活动报名开始时间',
+  `activity_sign_up_start` datetime DEFAULT NULL COMMENT '活动报名开始时间',
   `activity_sign_up_end` datetime NOT NULL COMMENT '活动报名结束时间',
   `activity_start` datetime NOT NULL COMMENT '活动开始时间',
   `activity_end` datetime NOT NULL COMMENT '活动结束',
@@ -20,9 +20,9 @@ CREATE TABLE `Activity` (
   `activity_charge` enum('AA','charge','free') NOT NULL DEFAULT 'free' COMMENT '收费情况',
   `activity_location` varchar(255) NOT NULL COMMENT '活动地点',
   `activity_note` varchar(255) DEFAULT NULL COMMENT '活动备注',
+  `activity_is_public` bit(1) NOT NULL DEFAULT b'1' COMMENT '是否是公开活动',
   PRIMARY KEY (`activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- ----------------------------
 -- Records of Activity
 -- ----------------------------
