@@ -1,5 +1,8 @@
 package com.smartions.dabolo.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +15,11 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.smartions.dabolo.model.Activity;
 import com.smartions.dabolo.service.IActivityService;
@@ -109,7 +115,7 @@ public class ApiController {
 
 	@GetMapping(value = "/wechat/connect")
 	public Map<String, Object> wechcatConnect(@RequestParam(value = "openid") String openId,
-			@RequestParam(value = "unionid",required=false) String unionId, HttpServletResponse response) {
+			@RequestParam(value = "unionid", required = false) String unionId, HttpServletResponse response) {
 
 		try {
 			return userService.wechatConnect(openId, RSAUtils.md5(openId), response);
@@ -141,6 +147,57 @@ public class ApiController {
 			e.printStackTrace();
 		}
 
+		return result;
+	}
+
+	@PostMapping(value = "/file/upload")
+	public Map<String, Object> upload(@RequestParam(value = "userid") String data, HttpServletRequest request,
+			HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (apiOauth(request, response)) {
+			List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+
+			MultipartFile file = null;
+
+			BufferedOutputStream stream = null;
+
+			for (int i = 0; i < files.size(); ++i) {
+
+				file = files.get(i);
+
+				if (!file.isEmpty()) {
+
+					try {
+
+						byte[] bytes = file.getBytes();
+
+						stream =
+
+								new BufferedOutputStream(new FileOutputStream(new File(file.getOriginalFilename())));
+
+						stream.write(bytes);
+
+						stream.close();
+
+					} catch (Exception e) {
+
+						stream = null;
+						result.put("flag", 0);
+
+					}
+
+				} else {
+					result.put("flag", -1);
+				}
+
+			}
+			result.put("flag", 1);
+
+		} else
+
+		{
+			result.put("flag", -2);
+		}
 		return result;
 	}
 }

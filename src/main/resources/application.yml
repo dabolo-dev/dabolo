@@ -10,5 +10,9 @@ wechat:
 token: 
   secret: 123456
   timeout: 1800
+upload:
+  path: /upload
+  maxsize: 5MB
+  requestsize: 10MB
   
  
