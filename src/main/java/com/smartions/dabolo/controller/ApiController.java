@@ -1,5 +1,6 @@
 package com.smartions.dabolo.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import com.smartions.dabolo.model.Activity;
 import com.smartions.dabolo.service.IActivityService;
 import com.smartions.dabolo.service.IUserService;
 import com.smartions.dabolo.service.IWechatService;
+import com.smartions.dabolo.utils.AESWechat;
 import com.smartions.dabolo.utils.Encryptor;
 
 import net.sf.json.JSONObject;
@@ -99,11 +101,25 @@ public class ApiController {
 		JSONObject sessionResult = wechatService.getSessionKey(code);
 		result.put("unionid", sessionResult.get("unionid"));
 		result.put("openid", sessionResult.get("openid"));
-		String key = new String(Base64.decodeBase64(sessionResult.get("session_key").toString()));
-		String decodeIv = new String(Base64.decodeBase64(iv));
-		String decodeData = new String(Base64.decodeBase64(data));
-		String resultData = Encryptor.decrypt(key, decodeIv, decodeData);
-		result.put("data", resultData);
+
+		try {
+
+				
+			
+			byte[] resultByte  = AESWechat.decrypt(Base64.decodeBase64(data),    
+                    Base64.decodeBase64(sessionResult.get("session_key").toString()),  
+                    Base64.decodeBase64(iv));    
+                if(null != resultByte && resultByte.length > 0){    
+                    String userInfo = new String(resultByte, "UTF-8");    
+                    result.put("data", userInfo);
+                }
+			
+                
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
 		return result;
 	}
