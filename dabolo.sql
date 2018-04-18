@@ -33,7 +33,7 @@ CREATE TABLE `Activity` (
 DROP TABLE IF EXISTS `ActivityAndLabel`;
 CREATE TABLE `ActivityAndLabel` (
   `activity_and_lable_activity_id` char(32) NOT NULL,
-  `activity_and_label_label_id` char(32) NOT NULL,
+  `activity_and_label_label_name` char(32) NOT NULL,
   PRIMARY KEY (`activity_and_lable_activity_id`,`activity_and_label_label_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
