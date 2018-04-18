@@ -1,6 +1,7 @@
 package com.smartions.dabolo.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smartions.dabolo.model.Activity;
+import com.smartions.dabolo.service.IActivityService;
 import com.smartions.dabolo.service.IUserService;
 import com.smartions.dabolo.service.IWechatService;
 import com.smartions.dabolo.utils.Encryptor;
@@ -21,10 +24,16 @@ public class ApiController {
 	@Autowired
 	IUserService userService;
 
+
 	@Autowired
 	IWechatService wechatService;
 
-	@GetMapping(value = "/")
+	
+
+	@Autowired
+	IActivityService activityService;
+	
+	@GetMapping(value="/")
 	public String test() {
 		return "hello world1235";
 	}
@@ -67,10 +76,20 @@ public class ApiController {
 
 	}
 
-	@GetMapping(value = "/wechat/connect")
-	public Map<String, Object> wechcatConnect(@RequestParam(value = "openid") String openId,
-			@RequestParam(value = "unionid") String unionId) {
+
+	@GetMapping(value="/activity")
+	public List<Activity> getActivityList(){
+		return activityService.getActivityList();
+	}
+	@GetMapping(value="/activityinfo/{id}")
+	public Activity getActivityInfo(@PathVariable(value="id") long id){
+		return activityService.getActivityInfo(id);
+	}
+	@GetMapping(value="/wechat/connect")
+	public Map<String,Object> wechcatConnect(@RequestParam(value="openid") String openId,@RequestParam(value="unionid") String unionId){
+
 		return userService.wechatConnect(openId, unionId);
+
 	}
 
 	@GetMapping(value = "/wechat/decodedata")
