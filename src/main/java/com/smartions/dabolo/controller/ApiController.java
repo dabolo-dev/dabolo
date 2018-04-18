@@ -1,5 +1,6 @@
 package com.smartions.dabolo.controller;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.smartions.dabolo.service.ITokenService;
 import com.smartions.dabolo.service.IUserService;
 import com.smartions.dabolo.service.IWechatService;
 import com.smartions.dabolo.utils.AESWechat;
+import com.smartions.dabolo.utils.RSAUtils;
 
 import net.sf.json.JSONObject;
 
@@ -107,10 +109,15 @@ public class ApiController {
 
 	@GetMapping(value = "/wechat/connect")
 	public Map<String, Object> wechcatConnect(@RequestParam(value = "openid") String openId,
-			@RequestParam(value = "unionid") String unionId, HttpServletResponse response) {
+			@RequestParam(value = "unionid",required=false) String unionId, HttpServletResponse response) {
 
-		return userService.wechatConnect(openId, unionId, response);
-
+		try {
+			return userService.wechatConnect(openId, RSAUtils.md5(openId), response);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@GetMapping(value = "/wechat/decodedata")
@@ -131,7 +138,6 @@ public class ApiController {
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
