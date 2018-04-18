@@ -1,9 +1,11 @@
 package com.smartions.dabolo.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.smartions.dabolo.model.Activity;
 import com.smartions.dabolo.service.IActivityService;
+import com.smartions.dabolo.service.ITokenService;
 import com.smartions.dabolo.service.IUserService;
 import com.smartions.dabolo.service.IWechatService;
 import com.smartions.dabolo.utils.AESWechat;
-import com.smartions.dabolo.utils.Encryptor;
 
 import net.sf.json.JSONObject;
 
@@ -26,16 +28,25 @@ public class ApiController {
 	@Autowired
 	IUserService userService;
 
-
 	@Autowired
 	IWechatService wechatService;
 
-	
-
 	@Autowired
 	IActivityService activityService;
-	
-	@GetMapping(value="/")
+
+	@Autowired
+	ITokenService tokenService;
+
+	public boolean apiOauth(HttpServletRequest request, HttpServletResponse response) {
+		if (request.getHeader("token") == null)
+			return false;
+		String tokenNew = tokenService.refreshToken(request.getHeader("token"));
+		if (tokenNew != null)
+			response.addHeader("token", tokenNew);
+		return tokenNew != null;
+	}
+
+	@GetMapping(value = "/")
 	public String test() {
 		return "hello world1235";
 	}
@@ -65,32 +76,40 @@ public class ApiController {
 
 	@GetMapping(value = "/user/signin")
 	public Map<String, Object> signIn(@RequestParam(value = "password") String password,
-			@RequestParam(value = "userid") String userId) {
-		return userService.signIn(userId, password);
+			@RequestParam(value = "userid") String userId, HttpServletResponse response) {
+		return userService.signIn(userId, password, response);
 	}
 
 	@GetMapping(value = "/user/updatepassword")
 	public Map<String, Object> updatePassword(@RequestParam(value = "oldpassword") String oldPassword,
-			@RequestParam(value = "newpassword") String newPassword, @RequestParam(value = "userid") String userId) {
+			@RequestParam(value = "newpassword") String newPassword, @RequestParam(value = "userid") String userId,
+			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("flag", userService.updatePassword(userId, oldPassword, newPassword));
+		if (apiOauth(request, response)) {
+			result.put("flag", userService.updatePassword(userId, oldPassword, newPassword));
+		} else {
+			result.put("flag", 0);
+		}
+
 		return result;
 
 	}
 
-
-	@GetMapping(value="/activity")
-	public List<Activity> getActivityList(){
+	@GetMapping(value = "/activity")
+	public List<Activity> getActivityList() {
 		return activityService.getActivityList();
 	}
-	@GetMapping(value="/activityinfo/{id}")
-	public Activity getActivityInfo(@PathVariable(value="id") long id){
+
+	@GetMapping(value = "/activityinfo/{id}")
+	public Activity getActivityInfo(@PathVariable(value = "id") long id) {
 		return activityService.getActivityInfo(id);
 	}
-	@GetMapping(value="/wechat/connect")
-	public Map<String,Object> wechcatConnect(@RequestParam(value="openid") String openId,@RequestParam(value="unionid") String unionId){
 
-		return userService.wechatConnect(openId, unionId);
+	@GetMapping(value = "/wechat/connect")
+	public Map<String, Object> wechcatConnect(@RequestParam(value = "openid") String openId,
+			@RequestParam(value = "unionid") String unionId, HttpServletResponse response) {
+
+		return userService.wechatConnect(openId, unionId, response);
 
 	}
 
@@ -104,22 +123,17 @@ public class ApiController {
 
 		try {
 
-				
-			
-			byte[] resultByte  = AESWechat.decrypt(Base64.decodeBase64(data),    
-                    Base64.decodeBase64(sessionResult.get("session_key").toString()),  
-                    Base64.decodeBase64(iv));    
-                if(null != resultByte && resultByte.length > 0){    
-                    String userInfo = new String(resultByte, "UTF-8");    
-                    result.put("data", userInfo);
-                }
-			
-                
+			byte[] resultByte = AESWechat.decrypt(Base64.decodeBase64(data),
+					Base64.decodeBase64(sessionResult.get("session_key").toString()), Base64.decodeBase64(iv));
+			if (null != resultByte && resultByte.length > 0) {
+				String userInfo = new String(resultByte, "UTF-8");
+				result.put("data", userInfo);
+			}
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 
 		return result;
 	}

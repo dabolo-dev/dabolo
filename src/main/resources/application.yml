@@ -7,4 +7,8 @@ mybatis:
 wechat:
   appid: 
   secret: 
+token: 
+  secret: 123456
+  timeout: 1800
+  
  

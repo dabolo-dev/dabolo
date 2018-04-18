@@ -33,25 +33,6 @@ public class ApiFilter implements Filter {
 		// TODO Auto-generated method stub
 		System.out.println(123456);
 		chain.doFilter(request, response);
-//		try {
-//			if(request.getParameter("userid").equals(RSAUtils.md5(request.getParameter("user_pub")))) {//验证公钥属于用户
-//				if(RSAUtils.verify(request.getParameter("timeout"), request.getParameter("user_pub"), request.getParameter("token"))) {//token验证
-//					long deference=Long.parseLong(request.getParameter("timeout"))-System.currentTimeMillis();
-//					if(deference<=0) {//授权过期
-//						
-//					}else {
-//						if(deference<10*60*1000) {//刷新过期时间
-//							
-//						}
-//						
-//						chain.doFilter(request, response);
-//					}
-//				}
-//			}
-//		} catch (NoSuchAlgorithmException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		
 		
 		
