@@ -104,12 +104,12 @@ public class ApiController {
 	}
 
 	@GetMapping(value = "/activity")
-	public List<Activity> getActivityList() {
+	public List<Map<String,Object>> getActivityList() {
 		return activityService.getActivityList();
 	}
 
 	@GetMapping(value = "/activityinfo/{id}")
-	public Activity getActivityInfo(@PathVariable(value = "id") long id) {
+	public Map<String,Object> getActivityInfo(@PathVariable(value = "id") String id) {
 		return activityService.getActivityInfo(id);
 	}
 
@@ -197,6 +197,20 @@ public class ApiController {
 
 		{
 			result.put("flag", -2);
+		}
+		return result;
+	}
+
+	@GetMapping(value = "/activity/create")
+	public Map<String, Object> createActivity(@RequestParam(value = "userid") String userId,@RequestParam(value = "activity") String activity, HttpServletRequest request,
+			HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (apiOauth(request, response)) {
+			
+			
+			
+		} else {
+
 		}
 		return result;
 	}

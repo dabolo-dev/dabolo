@@ -1,72 +1,22 @@
 package com.smartions.dabolo.model;
 
-import java.io.Serializable;
-
-public class Activity implements Serializable{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private long id;
-	private String title;//活动名称
-	private String starttime;//开始时间
-	private String endtime;//结束时间
-	private String coverpath;//封面图片
-	private String address;//活动地点
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	private int qty;//活动人数
-	
-	private String status;//状态
-	
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public String getStarttime() {
-		return starttime;
-	}
-	public void setStarttime(String starttime) {
-		this.starttime = starttime;
-	}
-	public String getEndtime() {
-		return endtime;
-	}
-	public void setEndtime(String endtime) {
-		this.endtime = endtime;
-	}
-	public String getCoverpath() {
-		return coverpath;
-	}
-	public void setCoverpath(String coverpath) {
-		this.coverpath = coverpath;
-	}
-	public int getQty() {
-		return qty;
-	}
-	public void setQty(int qty) {
-		this.qty = qty;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
+public class Activity{
+	public static final String  TITLE= "activity_title";
+	public static final String  DESC= "activity_desc";
+	public static final String  STATUS= "activity_status";
+	public static final String  ID= "activity_id";
+	public static final String  EFFECT= "activity_effect";
+	public static final String  INDEX= "activity_index";
+	public static final String  CREATOR= "activity_creator";
+	public static final String  SIGN_UP_START= "activity_sign_up_start";
+	public static final String  SIGN_UP_END= "activity_sign_up_end";
+	public static final String  START= "activity_start";
+	public static final String  END= "activity_end";
+	public static final String  ALLOW_PERSION= "activity_allow_persion";
+	public static final String  CHARGE= "activity_charge";
+	public static final String  LOCATION= "activity_location";
+	public static final String  NOTE= "activity_note";
+	public static final String  IS_PUBLIC= "activity_is_public";
 	
 	
 	

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smartions.dabolo.mapper.ActivityMapper">
+	<resultMap type="java.util.HashMap" id="allResult"></resultMap>
+	<insert id="saveActivity" parameterType="hashmap">
+		insert into
+		Activity(activity_title,
+		activity_desc,
+		activity_id,
+		activity_creator,
+		activity_sign_up_start ,
+		activity_sign_up_end ,
+		activity_start ,
+		activity_end ,
+		activity_allow_persion ,
+		activity_charge ,
+		activity_location ,
+		activity_note ,
+		activity_is_public) values(
+		#{activity_title},
+		#{activity_desc},
+		#{activity_id},
+		#{activity_creator},
+		#{activity_sign_up_start} ,
+		#{activity_sign_up_end} ,
+		#{activity_start} ,
+		#{activity_end} ,
+		#{activity_allow_persion} ,
+		#{activity_charge} ,
+		#{activity_location} ,
+		#{activity_note} ,
+		#{activity_is_public}
+		);
+	</insert>
+	<insert id="saveType" parameterType="hashmap">
+		insert into ActivityAndType
+		(activity_and_type_type_id,activity_and_type_activity_id)
+		values(#{activity_and_type_type_id},#{activity_and_type_activity_id});
+	</insert>
+	<insert id="saveLabel" parameterType="hashmap">
+		insert into
+		ActivityAndLabel(activity_and_lable_activity_id,activity_and_label_label_name)
+		values(#{activity_and_lable_activity_id},#{activity_and_label_label_name});
+	</insert>
+
+	<insert id="savePic" parameterType="list">
+		<foreach collection="list" item="item" open="" separator=";"
+			close="">
+			insert into Picture( pic_id ,
+			pic_desc ,
+			pic_creator ,
+			pic_path ,
+			pic_activity_id ,
+			pic_face ) values(
+			#{item.pic_id} ,
+			#{item.pic_desc} ,
+			#{item.pic_creator} ,
+			#{item.pic_path} ,
+			#{item.pic_activity_id} ,
+			#{item.pic_face} )
+		</foreach>
+
+	</insert>
+	<select id="getActivityInfo" resultType="hashMap">
+		select * from Activity where activity_id=#{activityId}
+	</select>
+	<select id="getActivityType" resultType="hashMap">
+		select * from ActivityAndType where activity_and_type_activity_id=#{activityId}
+	</select>
+	<select id="getActivityLabel" resultType="hashMap">
+		select * from ActivityAndLabel where activity_and_lable_activity_id=#{activityId}
+	</select>
+	<select id="getActivityPic" resultType="hashMap">
+		select * from Picture where pic_activity_id=#{activityId}
+	</select>
+</mapper>  

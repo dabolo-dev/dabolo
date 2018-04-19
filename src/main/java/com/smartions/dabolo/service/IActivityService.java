@@ -1,10 +1,12 @@
 package com.smartions.dabolo.service;
 
 import java.util.List;
-
-import com.smartions.dabolo.model.Activity;
+import java.util.Map;
 
 public interface IActivityService {
-	List<Activity> getActivityList();
-	Activity getActivityInfo(long id);
+	List<Map<String,Object>> getActivityList();
+
+	Map<String,Object> getActivityInfo(String activityId);
+	Map<String,Object> createActivity(String userId,Map<String,Object> activityMap);
+
 }
