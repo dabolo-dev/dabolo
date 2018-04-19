@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.smartions.dabolo.model.Activity;
 import com.smartions.dabolo.service.IActivityService;
 import com.smartions.dabolo.service.ITokenService;
 import com.smartions.dabolo.service.IUserService;
