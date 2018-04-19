@@ -67,9 +67,9 @@ public class UserService implements IUserService {
 					if (Boolean.parseBoolean(user.get(User.ACTIVE).toString())) {
 						user.remove(User.PRIVATE_STR);
 						user.remove(User.ACTIVE);
-						String toekn = tokenService.createToken(privateStr, userId,
+						String token = tokenService.createToken(privateStr, userId,
 								user.get(User.PUBLIC_STR).toString());
-						response.addHeader("toekn", toekn);
+						response.addHeader("token", token);
 						return user;
 					}
 
