@@ -8,9 +8,9 @@ import org.apache.ibatis.annotations.Param;
 public interface ActivityMapper {
 	int saveActivity(Map<String, Object> activity);
 
-	int saveType(Map<String, Object> activityAndType);
+	int saveType(List<Map<String, Object>> activityAndType);
 
-	int saveLabel(Map<String, Object> activityAndLabel);
+	int saveLabel(List<Map<String, Object>> activityAndLabel);
 
 	int savePic(List<Map<String, Object>> activityAndPicList);
 

@@ -3,10 +3,14 @@ package com.smartions.dabolo.controller;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.smartions.dabolo.model.Activity;
 import com.smartions.dabolo.service.IActivityService;
 import com.smartions.dabolo.service.ITokenService;
 import com.smartions.dabolo.service.IUserService;
@@ -28,6 +33,7 @@ import com.smartions.dabolo.service.IWechatService;
 import com.smartions.dabolo.utils.AESWechat;
 import com.smartions.dabolo.utils.RSAUtils;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @RestController
@@ -103,12 +109,12 @@ public class ApiController {
 	}
 
 	@GetMapping(value = "/activity")
-	public List<Map<String,Object>> getActivityList() {
+	public List<Map<String, Object>> getActivityList() {
 		return activityService.getActivityList();
 	}
 
 	@GetMapping(value = "/activityinfo/{id}")
-	public Map<String,Object> getActivityInfo(@PathVariable(value = "id") String id) {
+	public Map<String, Object> getActivityInfo(@PathVariable(value = "id") String id) {
 		return activityService.getActivityInfo(id);
 	}
 
@@ -150,8 +156,7 @@ public class ApiController {
 	}
 
 	@PostMapping(value = "/file/upload")
-	public Map<String, Object> upload(@RequestParam(value = "userid") String data, HttpServletRequest request,
-			HttpServletResponse response) {
+	public Map<String, Object> upload(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (apiOauth(request, response)) {
 			List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
@@ -167,12 +172,13 @@ public class ApiController {
 				if (!file.isEmpty()) {
 
 					try {
-
+						File tmeFile = new File(file.getOriginalFilename());
+						System.out.println(tmeFile.getAbsolutePath());
 						byte[] bytes = file.getBytes();
 
 						stream =
 
-								new BufferedOutputStream(new FileOutputStream(new File(file.getOriginalFilename())));
+								new BufferedOutputStream(new FileOutputStream(tmeFile));
 
 						stream.write(bytes);
 
@@ -200,26 +206,79 @@ public class ApiController {
 		return result;
 	}
 
-	@GetMapping(value = "/activity/create")
-	public Map<String, Object> createActivity(@RequestParam(value = "userid") String userId,@RequestParam(value = "activity") String activity, HttpServletRequest request,
+	@PostMapping(value = "/activity/create")
+	public Map<String, Object> createActivity(
+			@RequestParam(value="activity") String activity, HttpServletRequest request,
 			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		if (apiOauth(request, response)) {
-			
-			 
-			
-		} else {
+		System.out.println(activity);
+		try {
+			String inData=URLDecoder.decode(URLDecoder.decode(activity,"UTF-8"),"UTF-8");
+			JSONObject json=JSONObject.fromObject(inData);
+			System.out.println(json.get("userid"));
+			if (apiOauth(request, response)) {
+				Map<String, Object> inDataMap = new HashMap<String, Object>();
+				String activityId=RSAUtils.md5(json.get("userid") + String.valueOf(System.currentTimeMillis()));
+				inDataMap.put(Activity.TITLE, json.getString(""));
+				inDataMap.put(Activity.ID, activityId);
+				inDataMap.put(Activity.DESC, json.getString(""));
+				inDataMap.put(Activity.ALLOW_PERSION, json.getInt(""));
+				inDataMap.put(Activity.CREATOR, json.getString("userid"));
+				inDataMap.put(Activity.END, json.getString(""));
+				inDataMap.put(Activity.SIGN_UP_START, json.getString(""));
+				inDataMap.put(Activity.SIGN_UP_END, json.getString(""));
+				inDataMap.put(Activity.START, json.getString(""));
+				JSONArray lableList=json.getJSONArray("");
+				List<Map<String,Object>> lables=new ArrayList<Map<String,Object>>();
+				for(int i =0;i<lableList.size();i++) {
+					Map<String,Object> map=new HashMap<String,Object>();
+					map.put("activity_and_lable_activity_id", activityId);
+					map.put("activity_and_label_label_name", lableList.getString(i));
+					lables.add(map);
+				}
+				
+				inDataMap.put("labelList", lables);
+				JSONArray picList=json.getJSONArray("");
+				List<Map<String,Object>> pics=new ArrayList<Map<String,Object>>();
+				for(int i =0;i<picList.size();i++) {
+					JSONObject jObject=picList.getJSONObject(i);
+					Set<String> keySet=jObject.keySet();
+					Map<String,Object> map=new HashMap<String,Object>();
+					for(String key:keySet) {
+						map.put(key, jObject.get(key));
+					}
+					pics.add(map);
+				}
+				inDataMap.put("picList", pics);
+				JSONArray typeList=json.getJSONArray("");
+				List<Map<String,Object>> types=new ArrayList<Map<String,Object>>();
+				for(int i =0;i<typeList.size();i++) {
+					Map<String,Object> map=new HashMap<String,Object>();
+					map.put("activity_and_type_activity_id", activityId);
+					map.put("activity_and_type_type_id", typeList.getString(i));
+					types.add(map);
+				}
+				inDataMap.put("typeList", types);
+				
+				activityService.createActivity(String.valueOf(json.get("userid")), inDataMap);
+			} else {
 
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		return result;
 	}
-	
-	@GetMapping(value="/activity/typelist")
-	public List<Map<String,Object>> getTypeList(){
+
+	@GetMapping(value = "/activity/typelist")
+	public List<Map<String, Object>> getTypeList() {
 		return activityService.getTypeList();
 	}
-	@GetMapping(value="/activity/defaultlabellist")
-	public List<Map<String,Object>> defaultlabellist(){
+
+	@GetMapping(value = "/activity/defaultlabellist")
+	public List<Map<String, Object>> defaultlabellist() {
 		return activityService.getLabelList();
 	}
 }

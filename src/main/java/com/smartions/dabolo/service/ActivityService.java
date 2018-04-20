@@ -42,9 +42,10 @@ public class ActivityService implements IActivityService {
 			activityMapper.saveActivity(activityMap);
 			
 			//3.保存标签
-			activityMapper.saveLabel(activityMap);
+			activityMapper.saveLabel((List<Map<String, Object>>) activityMap.get("labeList"));
 			//4.保存图片
-			//activityMapper.savePic(activityAndPicList);
+			activityMapper.savePic( (List<Map<String, Object>>) activityMap.get("picList"));
+			activityMapper.saveType((List<Map<String, Object>>) activityMap.get("typeList"));
 			return getActivityInfo(activityId);
 			
 		} catch (NoSuchAlgorithmException e) {

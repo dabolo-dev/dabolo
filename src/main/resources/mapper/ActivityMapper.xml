@@ -33,14 +33,20 @@
 		);
 	</insert>
 	<insert id="saveType" parameterType="hashmap">
+	<foreach collection="list" item="item" open="" separator=";"
+			close="">
 		insert into ActivityAndType
 		(activity_and_type_type_id,activity_and_type_activity_id)
-		values(#{activity_and_type_type_id},#{activity_and_type_activity_id});
+		values(#{item.activity_and_type_type_id},#{item.activity_and_type_activity_id});
+		</foreach>
 	</insert>
 	<insert id="saveLabel" parameterType="hashmap">
+	<foreach collection="list" item="item" open="" separator=";"
+			close="">
 		insert into
 		ActivityAndLabel(activity_and_lable_activity_id,activity_and_label_label_name)
-		values(#{activity_and_lable_activity_id},#{activity_and_label_label_name});
+		values(#{item.activity_and_lable_activity_id},#{item.activity_and_label_label_name});
+		</foreach>
 	</insert>
 
 	<insert id="savePic" parameterType="list">
