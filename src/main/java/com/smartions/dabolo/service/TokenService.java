@@ -40,9 +40,13 @@ public class TokenService implements ITokenService {
 		System.out.println(JSONArray.fromObject(tokens));
 		System.out.println(tokens.length);
 		if (RSAUtils.verify(tokens[0], tokens[2], tokens[1])) {
-			if (Long.parseLong(AES.decrypt(tokens[3], token.getSecret())) < System.currentTimeMillis())
-				return null;
+			
 			try {
+				if (Long.parseLong(new String(Base64.decodeBase64(AES.decrypt(tokens[3], token.getSecret())),"UTF-8")) < System.currentTimeMillis()) {
+					System.out.println(1267);
+					return null;
+				}
+					
 				long time = System.currentTimeMillis() + Long.parseLong(token.getTimeOut()) * 1000;
 				return tokens[0] + "." + tokens[1] + "." + tokens[2] + "."
 						+ AES.encrypt(Base64.encodeBase64(String.valueOf(time).getBytes("UTF-8")), token.getSecret());
