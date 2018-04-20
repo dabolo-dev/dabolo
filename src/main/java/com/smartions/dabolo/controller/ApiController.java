@@ -206,11 +206,20 @@ public class ApiController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (apiOauth(request, response)) {
 			
-			
+			 
 			
 		} else {
 
 		}
 		return result;
+	}
+	
+	@GetMapping(value="/activity/typelist")
+	public List<Map<String,Object>> getTypeList(){
+		return activityService.getTypeList();
+	}
+	@GetMapping(value="/activity/defaultlabellist")
+	public List<Map<String,Object>> defaultlabellist(){
+		return activityService.getLabelList();
 	}
 }

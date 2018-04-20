@@ -55,5 +55,17 @@ public class ActivityService implements IActivityService {
 		return null;
 	}
 
+	@Override
+	public List<Map<String, Object>> getLabelList() {
+		// TODO Auto-generated method stub
+		return activityMapper.getLabelList();
+	}
+
+	@Override
+	public List<Map<String, Object>> getTypeList() {
+		// TODO Auto-generated method stub
+		return activityMapper.getTypeList();
+	}
+
 
 }

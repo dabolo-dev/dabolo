@@ -73,4 +73,10 @@
 	<select id="getActivityPic" resultType="hashMap">
 		select * from Picture where pic_activity_id=#{activityId}
 	</select>
+	<select id="getLabelList" resultType="hashMap">
+		select * from Label;
+	</select>
+	<select id="getTypeList" resultType="hashMap">
+		select * from ActivityType;
+	</select>
 </mapper>  

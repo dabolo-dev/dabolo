@@ -21,4 +21,7 @@ public interface ActivityMapper {
 	List<Map<String, Object>> getActivityLabel(@Param("activityId")String activityId);
 
 	List<Map<String, Object>> getActivityPic(@Param("activityId")String activityId);
+	
+	List<Map<String,Object>> getLabelList();
+	List<Map<String,Object>> getTypeList();
 }
