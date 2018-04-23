@@ -83,6 +83,6 @@
 		select * from Label;
 	</select>
 	<select id="getTypeList" resultType="hashMap">
-		select * from ActivityType;
+		select activity_type_id as id,activity_type_name as name from ActivityType;
 	</select>
 </mapper>  
