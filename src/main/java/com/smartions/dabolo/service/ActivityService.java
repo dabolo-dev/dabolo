@@ -44,7 +44,7 @@ public class ActivityService implements IActivityService {
 			//3.保存标签
 			activityMapper.saveLabel((List<Map<String, Object>>) activityMap.get("labeList"));
 			//4.保存图片
-			activityMapper.savePic( (List<Map<String, Object>>) activityMap.get("picList"));
+			//activityMapper.savePic( (List<Map<String, Object>>) activityMap.get("picList"));
 			activityMapper.saveType((List<Map<String, Object>>) activityMap.get("typeList"));
 			return getActivityInfo(activityId);
 			

@@ -16,7 +16,11 @@
 		activity_charge ,
 		activity_location ,
 		activity_note ,
-		activity_is_public) values(
+		activity_is_public,
+		activity_location_latitude,
+		activity_location_longitude,
+		activity_location_geohash
+		) values(
 		#{activity_title},
 		#{activity_desc},
 		#{activity_id},
@@ -29,24 +33,37 @@
 		#{activity_charge} ,
 		#{activity_location} ,
 		#{activity_note} ,
-		#{activity_is_public}
+		#{activity_is_public},
+		#{activity_location_latitude},
+		#{activity_location_longitude},
+		#{activity_location_geohash}
 		);
 	</insert>
 	<insert id="saveType" parameterType="hashmap">
-	<foreach collection="list" item="item" open="" separator=";"
-			close="">
+	
 		insert into ActivityAndType
 		(activity_and_type_type_id,activity_and_type_activity_id)
-		values(#{item.activity_and_type_type_id},#{item.activity_and_type_activity_id});
+		values
+		<foreach collection="list" item="item" open="" separator=","
+			close="">
+		(#{item.activity_and_type_type_id},#{item.activity_and_type_activity_id})
 		</foreach>
 	</insert>
 	<insert id="saveLabel" parameterType="hashmap">
-	<foreach collection="list" item="item" open="" separator=";"
-			close="">
+	
 		insert into
-		ActivityAndLabel(activity_and_lable_activity_id,activity_and_label_label_name)
-		values(#{item.activity_and_lable_activity_id},#{item.activity_and_label_label_name});
+		ActivityAndLabel(
+		activity_and_lable_activity_id,
+		activity_and_label_label_name
+		)
+		values
+		<foreach collection="list" item="item" open="" separator=","
+			close="">
+		(#{item.activity_and_lable_activity_id},
+		#{item.activity_and_label_label_name})
 		</foreach>
+		
+		
 	</insert>
 
 	<insert id="savePic" parameterType="list">

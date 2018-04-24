@@ -3,14 +3,12 @@ package com.smartions.dabolo.controller;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +29,7 @@ import com.smartions.dabolo.service.ITokenService;
 import com.smartions.dabolo.service.IUserService;
 import com.smartions.dabolo.service.IWechatService;
 import com.smartions.dabolo.utils.AESWechat;
+import com.smartions.dabolo.utils.GeoHash;
 import com.smartions.dabolo.utils.RSAUtils;
 
 import net.sf.json.JSONArray;
@@ -211,35 +210,45 @@ public class ApiController {
 			@RequestParam(value="activity") String activity, HttpServletRequest request,
 			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		System.out.println(activity);
+		
 		try {
 			String inData=URLDecoder.decode(URLDecoder.decode(activity,"UTF-8"),"UTF-8");
+			System.out.println("indata:"+inData);
 			JSONObject json=JSONObject.fromObject(inData);
 			System.out.println(json.get("userid"));
 			if (apiOauth(request, response)) {
 				Map<String, Object> inDataMap = new HashMap<String, Object>();
 				String activityId=RSAUtils.md5(json.get("userid") + String.valueOf(System.currentTimeMillis()));
-				inDataMap.put(Activity.TITLE, json.getString(""));
+				inDataMap.put(Activity.TITLE, json.getString("name"));
 				inDataMap.put(Activity.ID, activityId);
-				inDataMap.put(Activity.DESC, json.getString(""));
-				inDataMap.put(Activity.ALLOW_PERSION, json.getInt(""));
+				inDataMap.put(Activity.DESC, json.getString("description"));
+				inDataMap.put(Activity.IS_PUBLIC, json.getBoolean("isPublic"));
+				inDataMap.put(Activity.ALLOW_PERSION, json.getInt("limit"));
 				inDataMap.put(Activity.CREATOR, json.getString("userid"));
-				inDataMap.put(Activity.END, json.getString(""));
-				inDataMap.put(Activity.SIGN_UP_START, json.getString(""));
-				inDataMap.put(Activity.SIGN_UP_END, json.getString(""));
-				inDataMap.put(Activity.START, json.getString(""));
-				JSONArray lableList=json.getJSONArray("");
+				inDataMap.put(Activity.END, json.getString("endtime"));
+				inDataMap.put(Activity.CHARGE, json.getString("cost"));
+				inDataMap.put(Activity.SIGN_UP_START, json.getString("signupstarttime"));
+				inDataMap.put(Activity.SIGN_UP_END, json.getString("signupendtime"));
+				inDataMap.put(Activity.START, json.getString("starttime"));
+				inDataMap.put(Activity.LOCATION, json.getJSONObject("address").getString("addstr"));
+				inDataMap.put(Activity.LOCATION_latitude, json.getJSONObject("address").getDouble("latitude"));
+				inDataMap.put(Activity.LOCATION_longitude, json.getJSONObject("address").getDouble("longitude"));
+				GeoHash ghash=new GeoHash(json.getJSONObject("address").getDouble("latitude"),json.getJSONObject("address").getDouble("longitude"));
+				inDataMap.put(Activity.LOCATION_GEOHASH, ghash.getGeoHashBase32());
+				JSONArray lableList=json.getJSONArray("tag");
 				List<Map<String,Object>> lables=new ArrayList<Map<String,Object>>();
 				for(int i =0;i<lableList.size();i++) {
 					Map<String,Object> map=new HashMap<String,Object>();
 					map.put("activity_and_lable_activity_id", activityId);
-					map.put("activity_and_label_label_name", lableList.getString(i));
-					lables.add(map);
+					map.put("activity_and_label_label_name", lableList.getJSONObject(i).getString("name"));
+					lables.add(map); 
 				}
 				
-				inDataMap.put("labelList", lables);
-				JSONArray picList=json.getJSONArray("");
+				inDataMap.put("labeList", lables);
+				
 				List<Map<String,Object>> pics=new ArrayList<Map<String,Object>>();
+				/*
+				JSONArray picList=json.getJSONArray("");
 				for(int i =0;i<picList.size();i++) {
 					JSONObject jObject=picList.getJSONObject(i);
 					Set<String> keySet=jObject.keySet();
@@ -248,14 +257,14 @@ public class ApiController {
 						map.put(key, jObject.get(key));
 					}
 					pics.add(map);
-				}
+				}*/
 				inDataMap.put("picList", pics);
-				JSONArray typeList=json.getJSONArray("");
+				JSONArray typeList=json.getJSONArray("atype");
 				List<Map<String,Object>> types=new ArrayList<Map<String,Object>>();
 				for(int i =0;i<typeList.size();i++) {
 					Map<String,Object> map=new HashMap<String,Object>();
 					map.put("activity_and_type_activity_id", activityId);
-					map.put("activity_and_type_type_id", typeList.getString(i));
+					map.put("activity_and_type_type_id", typeList.getJSONObject(i).getString("name"));
 					types.add(map);
 				}
 				inDataMap.put("typeList", types);
@@ -273,12 +282,22 @@ public class ApiController {
 	}
 
 	@GetMapping(value = "/activity/typelist")
-	public List<Map<String, Object>> getTypeList() {
-		return activityService.getTypeList();
+	public List<Map<String, Object>> getTypeList(HttpServletRequest request,
+			HttpServletResponse response) {
+		if (apiOauth(request, response)) {
+			return activityService.getTypeList();
+		}
+		
+		return null;
+		
 	}
 
 	@GetMapping(value = "/activity/defaultlabellist")
-	public List<Map<String, Object>> defaultlabellist() {
-		return activityService.getLabelList();
+	public List<Map<String, Object>> defaultlabellist(HttpServletRequest request,
+			HttpServletResponse response) {
+		if (apiOauth(request, response)) {
+			return activityService.getLabelList();
+		}
+		return null;
 	}
 }

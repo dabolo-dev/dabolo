@@ -15,8 +15,12 @@ public class Activity{
 	public static final String  ALLOW_PERSION= "activity_allow_persion";
 	public static final String  CHARGE= "activity_charge";
 	public static final String  LOCATION= "activity_location";
+	public static final String  LOCATION_latitude= "activity_location_latitude";
+	public static final String  LOCATION_longitude= "activity_location_longitude";
+	public static final String  LOCATION_GEOHASH= "activity_location_geohash";
 	public static final String  NOTE= "activity_note";
 	public static final String  IS_PUBLIC= "activity_is_public";
+	
 	
 	
 	
