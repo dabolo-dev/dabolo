@@ -21,6 +21,9 @@ CREATE TABLE `Activity` (
   `activity_location` varchar(255) NOT NULL COMMENT '活动地点',
   `activity_note` varchar(255) DEFAULT NULL COMMENT '活动备注',
   `activity_is_public` bit(1) NOT NULL DEFAULT b'1' COMMENT '是否是公开活动',
+  `activity_location_latitude` double NOT NULL COMMENT '活动地点经度',
+  `activity_location_longitude` double NOT NULL COMMENT '活动地点维度',
+  `activity_location_geohash` varchar(255) NOT NULL COMMENT '活动地点的附件算法值',
   PRIMARY KEY (`activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- ----------------------------
