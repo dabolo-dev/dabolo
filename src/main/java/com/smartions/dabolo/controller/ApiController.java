@@ -268,8 +268,11 @@ public class ApiController {
 					types.add(map);
 				}
 				inDataMap.put("typeList", types);
-				
-				activityService.createActivity(String.valueOf(json.get("userid")), inDataMap);
+				String flag= String.valueOf(activityService.createActivity(String.valueOf(json.get("userid")), inDataMap).get("flag"));
+				System.out.println(flag+":flag");
+				if("1".equals(flag)){
+					return activityService.getActivityInfo(activityId);
+				}
 			} else {
 
 			}

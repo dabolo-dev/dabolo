@@ -1,6 +1,7 @@
 package com.smartions.dabolo.service;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,26 +35,26 @@ public class ActivityService implements IActivityService {
 
 	@Override
 	@Transactional
-	public Map<String, Object> createActivity(String userId, Map<String, Object> activityMap) {
+	public Map<String, Object> createActivity(String userId, Map<String, Object> activityMap)  {
+		Map<String, Object> inDataMap = new HashMap<String, Object>();
 		try {
-			//1.生成活动id
-			String activityId=RSAUtils.md5(userId+String.valueOf(System.currentTimeMillis()));
-			//2.保存活动
-			activityMapper.saveActivity(activityMap);
-			
-			//3.保存标签
-			activityMapper.saveLabel((List<Map<String, Object>>) activityMap.get("labeList"));
-			//4.保存图片
-			//activityMapper.savePic( (List<Map<String, Object>>) activityMap.get("picList"));
-			activityMapper.saveType((List<Map<String, Object>>) activityMap.get("typeList"));
-			return getActivityInfo(activityId);
-			
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//2.保存活动
+		activityMapper.saveActivity(activityMap);
+		
+		//3.保存标签
+		activityMapper.saveLabel((List<Map<String, Object>>) activityMap.get("labeList"));
+		//4.保存图片
+		//activityMapper.savePic( (List<Map<String, Object>>) activityMap.get("picList"));
+		activityMapper.saveType((List<Map<String, Object>>) activityMap.get("typeList"));
+		inDataMap.put("flag", 1);
+		}catch(Exception e) {
+			inDataMap.put("flag", 0);
+		}finally {
+			return inDataMap;
 		}
 		
-		return null;
+		
+		
 	}
 
 	@Override
