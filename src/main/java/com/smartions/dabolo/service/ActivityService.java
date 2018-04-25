@@ -99,6 +99,13 @@ public class ActivityService implements IActivityService {
 	}
 
 	@Override
+	@Transactional
+	public int setCover(String picName, String activityId) {
+		// TODO Auto-generated method stub
+		return activityMapper.setCover(picName, activityId);
+	}
+
+	@Override
 	public List<Map<String, Object>> getLabelList() {
 		// TODO Auto-generated method stub
 		return activityMapper.getLabelList();

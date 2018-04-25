@@ -129,4 +129,8 @@
 	<delete id="deletePic">
 		delete from Picture where pic_name=#{picName}
 	</delete>
+	<update id="setCover">
+		update Picture set pic_face=1 where pic_name!=#{picName} and pic_activity_id=#{activityId};
+		update Picture set pic_face=1 where pic_name=#{picName} and pic_activity_id=#{activityId}
+	</update>
 </mapper>  

@@ -152,6 +152,20 @@ public class ApiController {
 		}
 		return result;
 	}
+	
+	@GetMapping(value="/file/cover")
+	public Map<String,Object> setCover(@RequestParam(value="filename") String fileName, @RequestParam(value="activityid",required=false,defaultValue="-1") String activityId,HttpServletRequest request, HttpServletResponse response){
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("flag", 0);
+		if (apiOauth(request, response)) {
+			//delete from db
+			if(!("-1".equals(activityId)||StringUtils.isBlank(activityId))) {
+				activityService.deletePicture(fileName);
+			}
+			result.put("flag", 1);
+		}
+		return result;
+	}
 
 	@PostMapping(value = "/file/upload")
 	public Map<String, Object> upload(@RequestParam(value="userid") String userId,HttpServletRequest request, HttpServletResponse response) {
