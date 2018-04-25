@@ -155,7 +155,7 @@ public class ApiController {
 	}
 
 	@PostMapping(value = "/file/upload")
-	public Map<String, Object> upload(HttpServletRequest request, HttpServletResponse response) {
+	public Map<String, Object> upload(@RequestParam(value="userid") String userId,HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (apiOauth(request, response)) {
 			List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
@@ -163,6 +163,7 @@ public class ApiController {
 			MultipartFile file = null;
 
 			BufferedOutputStream stream = null;
+			List<Map<String,String>> fileNameList=new ArrayList<Map<String,String>>();
 
 			for (int i = 0; i < files.size(); ++i) {
 
@@ -171,7 +172,11 @@ public class ApiController {
 				if (!file.isEmpty()) {
 
 					try {
-						File tmeFile = new File(file.getOriginalFilename());
+						String fileName=userId+"_"+System.currentTimeMillis()+"_"+file.getOriginalFilename();
+						Map<String, String> fileInfo = new HashMap<String, String>();
+						fileInfo.put("newName", fileName);
+						fileInfo.put("oldName", file.getOriginalFilename());
+						File tmeFile = new File(fileName);
 						System.out.println(tmeFile.getAbsolutePath());
 						byte[] bytes = file.getBytes();
 
@@ -182,7 +187,9 @@ public class ApiController {
 						stream.write(bytes);
 
 						stream.close();
-
+						
+						fileNameList.add(fileInfo);
+						
 					} catch (Exception e) {
 
 						stream = null;
@@ -196,6 +203,7 @@ public class ApiController {
 
 			}
 			result.put("flag", 1);
+			result.put("fileList", fileNameList);
 
 		} else
 
