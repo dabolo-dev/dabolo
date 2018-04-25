@@ -272,7 +272,7 @@ public class ApiController {
 				for(int i =0;i<typeList.size();i++) {
 					Map<String,Object> map=new HashMap<String,Object>();
 					map.put("activity_and_type_activity_id", activityId);
-					map.put("activity_and_type_type_id", typeList.getJSONObject(i).getString("name"));
+					map.put("activity_and_type_type_id", typeList.getJSONObject(i).getString("id"));
 					types.add(map);
 				}
 				inDataMap.put("typeList", types);
