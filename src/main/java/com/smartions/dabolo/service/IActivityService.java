@@ -10,5 +10,6 @@ public interface IActivityService {
 	Map<String,Object> createActivity(String userId,Map<String,Object> activityMap);
 	List<Map<String,Object>> getLabelList();
 	List<Map<String,Object>> getTypeList();
+	 int deletePicture(String picName);
 
 }

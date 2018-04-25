@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -134,6 +135,23 @@ public class ApiController {
 
 		return result;
 	}
+	@GetMapping(value="/file/delete")
+	public Map<String, Object> deleteFile(@RequestParam(value="filename") String fileName, @RequestParam(value="activityid",required=false,defaultValue="-1") String activityId,HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("flag", 0);
+		if (apiOauth(request, response)) {
+			File file=new File(filePath+fileName);
+			if(file.exists()) {
+				file.delete();
+			}
+			//delete from db
+			if(!("-1".equals(activityId)||StringUtils.isBlank(activityId))) {
+				activityService.deletePicture(fileName);
+			}
+			result.put("flag", 1);
+		}
+		return result;
+	}
 
 	@PostMapping(value = "/file/upload")
 	public Map<String, Object> upload(@RequestParam(value="userid") String userId,HttpServletRequest request, HttpServletResponse response) {
@@ -240,11 +258,15 @@ public class ApiController {
 				JSONArray picList=json.getJSONArray("pic");
 				for(int i =0;i<picList.size();i++) {
 					JSONObject jObject=picList.getJSONObject(i);
-					Set<String> keySet=jObject.keySet();
+					
 					Map<String,Object> map=new HashMap<String,Object>();
-					for(String key:keySet) {
-						map.put(key, jObject.get(key));
-					}
+					
+						map.put("pic_id", RSAUtils.md5(jObject.getString("")));
+						map.put("pic_name", jObject.getString(""));
+						map.put("pic_creator", json.get("userid"));
+						map.put("pic_activity_id", activityId);
+						map.put("pic_face", jObject.getBoolean(""));
+					
 					pics.add(map);
 				}
 				inDataMap.put("picList", pics);

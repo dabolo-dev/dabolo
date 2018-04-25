@@ -75,15 +75,20 @@ public class ActivityService implements IActivityService {
 	public Map<String, Object> createActivity(String userId, Map<String, Object> activityMap) {
 		Map<String, Object> inDataMap = new HashMap<String, Object>();
 		try {
-			// 2.保存活动
 			activityMapper.saveActivity(activityMap);
-
-			// 3.保存标签
-			activityMapper.saveLabel((List<Map<String, Object>>) activityMap.get("labeList"));
-			// 4.保存图片
-			// activityMapper.savePic( (List<Map<String, Object>>)
-			// activityMap.get("picList"));
-			activityMapper.saveType((List<Map<String, Object>>) activityMap.get("typeList"));
+			List<Map<String, Object>> labelList=(List<Map<String, Object>>) activityMap.get("labeList");
+			if(labelList.size()>0) {
+				activityMapper.saveLabel(labelList);
+			}
+			List<Map<String, Object>> picList=(List<Map<String, Object>>) activityMap.get("picList");
+			if(picList.size()>0) {
+				activityMapper.savePic( picList);
+			}
+			List<Map<String, Object>> typeList=(List<Map<String, Object>>) activityMap.get("typeList");
+			if(typeList.size()>0) {
+				activityMapper.saveType(typeList);
+			}
+			
 			inDataMap.put("flag", 1);
 		} catch (Exception e) {
 			inDataMap.put("flag", 0);
@@ -103,6 +108,13 @@ public class ActivityService implements IActivityService {
 	public List<Map<String, Object>> getTypeList() {
 		// TODO Auto-generated method stub
 		return activityMapper.getTypeList();
+	}
+
+	@Override
+	@Transactional
+	public int deletePicture(String picName) {
+		// TODO Auto-generated method stub
+		return activityMapper.deletePic(picName);
 	}
 
 }

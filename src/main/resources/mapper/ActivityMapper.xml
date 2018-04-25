@@ -70,13 +70,13 @@
 		<foreach collection="list" item="item" open="" separator=";"
 			close="">
 			insert into Picture( pic_id ,
-			pic_desc ,
+			pic_name ,
 			pic_creator ,
 			pic_path ,
 			pic_activity_id ,
 			pic_face ) values(
 			#{item.pic_id} ,
-			#{item.pic_desc} ,
+			#{item.pic_name} ,
 			#{item.pic_creator} ,
 			#{item.pic_path} ,
 			#{item.pic_activity_id} ,
@@ -126,4 +126,7 @@
 	<select id="getActivityList" resultType="hashMap">
 		select * from Activity;
 	</select>
+	<delete id="deletePic">
+		delete from Picture where pic_name=#{picName}
+	</delete>
 </mapper>  
