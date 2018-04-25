@@ -33,7 +33,6 @@ public class DaboloApplication {
 
 		// Sets the directory location wherefiles will be stored.
 
-		factory.setLocation(uploadFile.getPath());
 
 		return factory.createMultipartConfig();
 

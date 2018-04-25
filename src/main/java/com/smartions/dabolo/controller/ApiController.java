@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +50,9 @@ public class ApiController {
 
 	@Autowired
 	ITokenService tokenService;
+	
+	@Value("${upload.path}")
+	private String filePath;
 
 	public boolean apiOauth(HttpServletRequest request, HttpServletResponse response) {
 		if (request.getHeader("token") == null)
@@ -57,30 +62,6 @@ public class ApiController {
 			response.addHeader("token", tokenNew);
 		return tokenNew != null;
 	}
-
-	@GetMapping(value = "/")
-	public String test() {
-		return "hello world1235";
-	}
-
-	@GetMapping(value = "/{id}")
-	public String pathValile(@PathVariable(value = "id") int id) {
-		return "pathValile:" + id;
-	}
-
-	@GetMapping(value = "/{id}/api")
-	public String requestParm(@PathVariable(value = "id") int id,
-			@RequestParam(value = "index", required = false, defaultValue = "0") int index) {
-		return "requestParm:" + id + ":" + index;
-	}
-
-	@GetMapping(value = "/json")
-	public Map<String, String> json() {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("response", "这是中文");
-		return map;
-	}
-
 	@GetMapping(value = "/user/signup")
 	public Map<String, Object> signUp(@RequestParam(value = "password") String password) {
 		return userService.signUp(password);
@@ -176,7 +157,7 @@ public class ApiController {
 						Map<String, String> fileInfo = new HashMap<String, String>();
 						fileInfo.put("newName", fileName);
 						fileInfo.put("oldName", file.getOriginalFilename());
-						File tmeFile = new File(fileName);
+						File tmeFile = new File(filePath+fileName);
 						System.out.println(tmeFile.getAbsolutePath());
 						byte[] bytes = file.getBytes();
 
@@ -255,8 +236,8 @@ public class ApiController {
 				inDataMap.put("labeList", lables);
 				
 				List<Map<String,Object>> pics=new ArrayList<Map<String,Object>>();
-				/*
-				JSONArray picList=json.getJSONArray("");
+				
+				JSONArray picList=json.getJSONArray("pic");
 				for(int i =0;i<picList.size();i++) {
 					JSONObject jObject=picList.getJSONObject(i);
 					Set<String> keySet=jObject.keySet();
@@ -265,7 +246,7 @@ public class ApiController {
 						map.put(key, jObject.get(key));
 					}
 					pics.add(map);
-				}*/
+				}
 				inDataMap.put("picList", pics);
 				JSONArray typeList=json.getJSONArray("atype");
 				List<Map<String,Object>> types=new ArrayList<Map<String,Object>>();

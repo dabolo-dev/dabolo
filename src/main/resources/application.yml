@@ -1,4 +1,12 @@
+upload:
+  path: D:/dabolofiles/
+  maxsize: 5MB
+  requestsize: 10MB
 spring:
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:${upload.path}
   profiles:
     active: dev
 mybatis:
@@ -10,9 +18,6 @@ wechat:
 token: 
   secret: 123456
   timeout: 1800
-upload:
-  path: /upload
-  maxsize: 5MB
-  requestsize: 10MB
+
   
  
