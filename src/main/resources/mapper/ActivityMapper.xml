@@ -40,17 +40,17 @@
 		);
 	</insert>
 	<insert id="saveType" parameterType="hashmap">
-	
+
 		insert into ActivityAndType
 		(activity_and_type_type_id,activity_and_type_activity_id)
 		values
 		<foreach collection="list" item="item" open="" separator=","
 			close="">
-		(#{item.activity_and_type_type_id},#{item.activity_and_type_activity_id})
+			(#{item.activity_and_type_type_id},#{item.activity_and_type_activity_id})
 		</foreach>
 	</insert>
 	<insert id="saveLabel" parameterType="hashmap">
-	
+
 		insert into
 		ActivityAndLabel(
 		activity_and_lable_activity_id,
@@ -59,11 +59,11 @@
 		values
 		<foreach collection="list" item="item" open="" separator=","
 			close="">
-		(#{item.activity_and_lable_activity_id},
-		#{item.activity_and_label_label_name})
+			(#{item.activity_and_lable_activity_id},
+			#{item.activity_and_label_label_name})
 		</foreach>
-		
-		
+
+
 	</insert>
 
 	<insert id="savePic" parameterType="list">
@@ -85,21 +85,45 @@
 
 	</insert>
 	<select id="getActivityInfo" resultType="hashMap">
-		select * from Activity where activity_id=#{activityId}
+		select * from Activity
+		where activity_id=#{activityId}
 	</select>
 	<select id="getActivityType" resultType="hashMap">
-		select * from ActivityAndType where activity_and_type_activity_id=#{activityId}
+		select * from ActivityAndType,ActivityType where
+		ActivityType.activity_type_id=ActivityAndType.activity_and_type_type_id
+		and activity_and_type_activity_id in (
+		<foreach collection="list" item="activityId" open=""
+			separator="," close="">
+			#{activityId}
+		</foreach>
+		)
 	</select>
 	<select id="getActivityLabel" resultType="hashMap">
-		select * from ActivityAndLabel where activity_and_lable_activity_id=#{activityId}
+		select * from ActivityAndLabel where activity_and_lable_activity_id in
+		(
+		<foreach collection="list" item="activityId" open=""
+			separator="," close="">
+			#{activityId}
+		</foreach>
+		)
 	</select>
 	<select id="getActivityPic" resultType="hashMap">
-		select * from Picture where pic_activity_id=#{activityId}
+		select * from Picture where pic_activity_id in (
+		<foreach collection="list" item="activityId" open=""
+			separator="," close="">
+			#{activityId}
+		</foreach>
+		)
 	</select>
 	<select id="getLabelList" resultType="hashMap">
-		select label_id as id,label_name as name from Label;
+		select label_id as
+		id,label_name as name from Label;
 	</select>
 	<select id="getTypeList" resultType="hashMap">
-		select activity_type_id as id,activity_type_name as name from ActivityType;
+		select activity_type_id as
+		id,activity_type_name as name from ActivityType;
+	</select>
+	<select id="getActivityList" resultType="hashMap">
+		select * from Activity;
 	</select>
 </mapper>  

@@ -16,12 +16,14 @@ public interface ActivityMapper {
 
 	Map<String, Object> getActivityInfo(@Param("activityId")String activityId);
 
-	List<Map<String, Object>> getActivityType(@Param("activityId")String activityId);
+	List<Map<String, Object>> getActivityType(List<String> activityIds);
 
-	List<Map<String, Object>> getActivityLabel(@Param("activityId")String activityId);
+	List<Map<String, Object>> getActivityLabel(List<String> activityIds);
 
-	List<Map<String, Object>> getActivityPic(@Param("activityId")String activityId);
+	List<Map<String, Object>> getActivityPic(List<String> activityIds);
 	
 	List<Map<String,Object>> getLabelList();
 	List<Map<String,Object>> getTypeList();
+	
+	List<Map<String,Object>> getActivityList();
 }
