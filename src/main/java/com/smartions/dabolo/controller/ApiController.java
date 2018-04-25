@@ -248,6 +248,7 @@ public class ApiController {
 				inDataMap.put(Activity.CREATOR, json.getString("userid"));
 				inDataMap.put(Activity.END, json.getString("endtime"));
 				inDataMap.put(Activity.CHARGE, json.getString("cost"));
+				inDataMap.put(Activity.STATUS, json.getString("status"));
 				inDataMap.put(Activity.SIGN_UP_START, json.getString("signupstarttime"));
 				inDataMap.put(Activity.SIGN_UP_END, json.getString("signupendtime"));
 				inDataMap.put(Activity.START, json.getString("starttime"));

@@ -5,6 +5,7 @@
 	<insert id="saveActivity" parameterType="hashmap">
 		insert into
 		Activity(activity_title,
+		activity_status,
 		activity_desc,
 		activity_id,
 		activity_creator,
@@ -22,6 +23,7 @@
 		activity_location_geohash
 		) values(
 		#{activity_title},
+		#{activity_status},
 		#{activity_desc},
 		#{activity_id},
 		#{activity_creator},
