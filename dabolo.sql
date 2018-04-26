@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS `Activity`;
 CREATE TABLE `Activity` (
   `activity_title` varchar(255) NOT NULL COMMENT '活动标题',
   `activity_desc` text NOT NULL COMMENT '活动描述',
-  `activity_status` enum('cancel','finish','processing','reading','publish','draft') NOT NULL DEFAULT 'draft' COMMENT '活动状态',
+  `activity_status` enum('cancel','finish','processing','publish','draft') NOT NULL DEFAULT 'draft' COMMENT '活动状态',
   `activity_id` char(32) NOT NULL COMMENT '活动id',
   `activity_effect` bit(1) NOT NULL DEFAULT b'1' COMMENT '活动是否有效',
   `activity_index` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '活动显示优先级',
