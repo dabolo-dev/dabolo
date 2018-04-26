@@ -69,18 +69,18 @@
 	</insert>
 
 	<insert id="savePic" parameterType="list">
-		<foreach collection="list" item="item" open="" separator=";"
-			close="">
+		
 			insert into Picture( pic_id ,
 			pic_name ,
 			pic_creator ,
-			pic_path ,
 			pic_activity_id ,
-			pic_face ) values(
+			pic_face ) values
+			<foreach collection="list" item="item" open="" separator=","
+			close="">
+			(
 			#{item.pic_id} ,
 			#{item.pic_name} ,
 			#{item.pic_creator} ,
-			#{item.pic_path} ,
 			#{item.pic_activity_id} ,
 			#{item.pic_face} )
 		</foreach>
