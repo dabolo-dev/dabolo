@@ -169,4 +169,7 @@
 			#{labelName}
 		</foreach>) and activity_and_lable_activity_id=#{activityId}
 	</delete>
+	<select id="getParticipateList" resultType="hashMap">
+	 select * from ActivityAndUser where activity_and_user_activity_id=#{activityId} and activity_and_user_participate=1;
+	</select>
 </mapper>  

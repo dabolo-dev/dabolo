@@ -128,4 +128,29 @@ public class UserService implements IUserService {
 		return signIn(userId, unionId,response);
 	}
 
+	@Override
+	@Transactional
+	public void signUpActivity(String userId, String activityId,boolean flag) {
+		// TODO Auto-generated method stub
+		//判断用户与活动是否存在关系
+		Map<String, Object> map=userMapper.getUserAndActivity(userId, activityId);
+		Map<String, Object> userAndActivity=new HashMap<String,Object>();
+		if(map!=null) {//存在
+			
+			userAndActivity.put("userId", userId);
+			userAndActivity.put("activityId", activityId);
+			userAndActivity.put("activity_and_user_participate", flag);
+			userMapper.editUserAndActivity(userAndActivity);
+		}else {//不存在
+			if(flag) {
+				userAndActivity.put("activity_and_user_user_id", userId);
+				userAndActivity.put("activity_and_user_activity_id", activityId);
+				userAndActivity.put("activity_and_user_participate", flag);
+				userMapper.saveUserAndActivity(userAndActivity);
+			}
+			
+		}
+		
+	}
+
 }

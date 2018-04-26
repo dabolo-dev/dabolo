@@ -37,6 +37,8 @@ public interface ActivityMapper {
 	int removeType(List<Map<String, Object>> activityAndType,@Param("activityId")String activityId);
 
 	int removeLabel(List<Map<String, Object>> activityAndLabel,@Param("activityId")String activityId);
+	
+	List<Map<String, Object>> getParticipateList(@Param("activityId")String activityId);
 
 
 }

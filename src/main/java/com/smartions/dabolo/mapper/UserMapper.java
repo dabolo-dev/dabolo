@@ -12,4 +12,8 @@ public interface UserMapper {
 	public int updatePassword(Map<String,Object> user);
 	public String getUserIdByWechatOpenId(@Param("openId") String openId);
 	public void bindThirdAndUser(Map<String,Object> third);
+	public Map<String,Object> getUserAndActivity(@Param("userId") String userId,@Param("activityId") String activityId);
+	public int editUserAndActivity(Map<String,Object> userAndActivity);
+	public int saveUserAndActivity(Map<String,Object> userAndActivity);
+	
 }

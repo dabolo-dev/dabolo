@@ -65,7 +65,10 @@ DROP TABLE IF EXISTS `ActivityAndUser`;
 CREATE TABLE `ActivityAndUser` (
   `activity_and_user_user_id` char(32) NOT NULL,
   `activity_and_user_activity_id` char(32) NOT NULL,
-  `activity_relationship` enum('participate','praise','attention') NOT NULL DEFAULT 'attention'
+  `activity_and_user_time` datetime NOT NULL,
+  `activity_and_user_participate` bit(1) NOT NULL DEFAULT b'0',
+  `activity_and_user_praise` bit(1) NOT NULL DEFAULT b'0',
+  `activity_and_user_attention` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
