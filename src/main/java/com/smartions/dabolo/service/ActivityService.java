@@ -54,7 +54,12 @@ public class ActivityService implements IActivityService {
 				map.put("typelist", mapTypeList);
 				map.put("labellist", mapLabelList);
 				map.put("piclist", mapPicList);
-				map.put("participateCount", activityMapper.getParticipateList(activityId).size());
+				List<Map<String, Object>> userAndActivityList=activityMapper.getParticipateList(activityId);
+				int count=0;
+				for(Map<String, Object> uaa:userAndActivityList) {
+					count+=Integer.parseInt(uaa.get("activity_and_user_persion_count").toString());
+				}
+				map.put("participateCount", count);
 			}
 		}
 		return activityList;
