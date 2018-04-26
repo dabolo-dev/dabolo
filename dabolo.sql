@@ -68,7 +68,8 @@ CREATE TABLE `ActivityAndUser` (
   `activity_and_user_time` datetime NOT NULL,
   `activity_and_user_participate` bit(1) NOT NULL DEFAULT b'0',
   `activity_and_user_praise` bit(1) NOT NULL DEFAULT b'0',
-  `activity_and_user_attention` bit(1) NOT NULL DEFAULT b'0'
+  `activity_and_user_attention` bit(1) NOT NULL DEFAULT b'0',
+  `activity_and_user_signin` bit(1) NOT NULL DEFAULT b'0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

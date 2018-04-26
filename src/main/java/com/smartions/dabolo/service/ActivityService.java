@@ -22,6 +22,7 @@ public class ActivityService implements IActivityService {
 		List<Map<String, Object>> activityList = activityMapper.getActivityList();
 		List<String> activityIds = new ArrayList<String>();
 		for (Map<String, Object> map : activityList) {
+			System.out.println(String.valueOf(map.get("activity_id"))+"+:activityId in");
 			activityIds.add(String.valueOf(map.get("activity_id")));
 		}
 		if (activityIds.size() > 0) {
@@ -31,6 +32,7 @@ public class ActivityService implements IActivityService {
 			List<Map<String, Object>> piclist = activityMapper.getActivityPic(activityIds);
 			for (Map<String, Object> map : activityList) {
 				String activityId = String.valueOf(map.get("activity_id"));
+				System.out.println(activityId+"+:activityId");
 				List<Map<String, Object>> mapTypeList = new ArrayList<Map<String, Object>>();
 				for (Map<String, Object> type : typelist) {
 					if (activityId.equals(type.get("activity_and_type_activity_id"))) {

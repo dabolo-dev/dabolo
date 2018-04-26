@@ -55,6 +55,9 @@ public class ApiController {
 
 	@Value("${upload.path}")
 	private String filePath;
+	
+	@Value("activity.distance")
+	private String distance;
 
 	public boolean apiOauth(HttpServletRequest request, HttpServletResponse response) {
 		if (request.getHeader("token") == null)
@@ -352,13 +355,12 @@ public class ApiController {
 				JSONObject json = JSONObject.fromObject(inData);
 				String activityId = json.getString("activityid");
 				inDataMap.put(Activity.ID, activityId);
-				
+
 				if (json.containsKey("name"))
 					inDataMap.put(Activity.TITLE, json.getString("name"));
 
 				if (json.containsKey("note"))
 					inDataMap.put(Activity.NOTE, json.getString("note"));
-
 
 				if (json.containsKey("description"))
 					inDataMap.put(Activity.DESC, json.getString("description"));
@@ -487,7 +489,7 @@ public class ApiController {
 				}
 				activityService.saveActivity(inDataMap);
 				result.put("flag", 1);
-				
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -496,16 +498,49 @@ public class ApiController {
 		}
 		return result;
 	}
-	
-	@GetMapping(value="user/signupActivity")
+
+	@GetMapping(value = "user/signupActivity")
 	public Map<String, Object> signupActivity(@RequestParam(value = "userid") String userId,
-			@RequestParam(value = "activityid") String activityId,@RequestParam(value = "flag") String falg,
+			@RequestParam(value = "activityid") String activityId, @RequestParam(value = "flag") String falg,
 			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("flag", 0);
 		if (apiOauth(request, response)) {
-			userService.signUpActivity(userId, activityId,Boolean.parseBoolean(falg));
+			userService.signUpActivity(userId, activityId, Boolean.parseBoolean(falg));
 			result.put("flag", 1);
+		}
+		return result;
+	}
+
+	@GetMapping(value = "user/signinActivity")
+	public Map<String, Object> signinActivity(@RequestParam(value = "activity") String activity,
+			HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("flag", 0);
+		if (apiOauth(request, response)) {
+			try {
+				String inData = URLDecoder.decode(URLDecoder.decode(activity, "UTF-8"), "UTF-8");
+				JSONObject json = JSONObject.fromObject(inData);
+				String activityId = json.getString("activityid");
+				String userId = json.getString("userid");
+				//获取活动信息
+				Map<String, Object> activityInfo=activityService.getActivityInfo(activityId);
+				//计算打卡位置是否在允许打卡范围内
+				double distanceCoumpter=GeoHash.getDistance(Double.parseDouble(activityInfo.get("activity_location_latitude").toString()),Double.parseDouble(activityInfo.get("activity_location_longitude").toString()),json.getDouble("latitude"),json.getDouble("longitude"));
+				
+				if(distanceCoumpter<=Double.parseDouble(distance)) {
+					//打卡
+					userService.signInActivity(userId, activityId);
+					result.put("flag", 1);
+				}else {
+					result.put("flag", 2);
+				}
+				
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 		return result;
 	}

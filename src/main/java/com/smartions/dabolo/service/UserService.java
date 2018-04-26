@@ -153,4 +153,15 @@ public class UserService implements IUserService {
 		
 	}
 
+	@Override
+	@Transactional
+	public void signInActivity(String userId, String activityId) {
+		// TODO Auto-generated method stub
+		Map<String, Object> userAndActivity=new HashMap<String,Object>();
+		userAndActivity.put("userId", userId);
+		userAndActivity.put("activityId", activityId);
+		userAndActivity.put("activity_and_user_signin", true);
+		userMapper.editUserAndActivity(userAndActivity);
+	}
+
 }
