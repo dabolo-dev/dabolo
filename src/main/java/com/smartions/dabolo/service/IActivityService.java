@@ -12,5 +12,6 @@ public interface IActivityService {
 	List<Map<String,Object>> getTypeList();
 	 int deletePicture(String picName);
 	 int setCover(String picName,String activityId);
+	 Map<String,Object> saveActivity(Map<String,Object> activityMap);
 
 }

@@ -29,4 +29,14 @@ public interface ActivityMapper {
 	
 	int deletePic(@Param("picName")String picName);
 	int setCover(@Param("picName")String picName, @Param("activityId")String activityId);
+	
+	
+	
+	int editActivity(Map<String, Object> activity);
+
+	int removeType(List<Map<String, Object>> activityAndType,@Param("activityId")String activityId);
+
+	int removeLabel(List<Map<String, Object>> activityAndLabel,@Param("activityId")String activityId);
+
+
 }

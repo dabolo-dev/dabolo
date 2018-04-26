@@ -3,6 +3,7 @@ package com.smartions.dabolo.controller;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class ApiController {
 
 	@Autowired
 	ITokenService tokenService;
-	
+
 	@Value("${upload.path}")
 	private String filePath;
 
@@ -63,6 +64,7 @@ public class ApiController {
 			response.addHeader("token", tokenNew);
 		return tokenNew != null;
 	}
+
 	@GetMapping(value = "/user/signup")
 	public Map<String, Object> signUp(@RequestParam(value = "password") String password) {
 		return userService.signUp(password);
@@ -135,31 +137,36 @@ public class ApiController {
 
 		return result;
 	}
-	@GetMapping(value="/file/delete")
-	public Map<String, Object> deleteFile(@RequestParam(value="filename") String fileName, @RequestParam(value="activityid",required=false,defaultValue="-1") String activityId,HttpServletRequest request, HttpServletResponse response) {
+
+	@GetMapping(value = "/file/delete")
+	public Map<String, Object> deleteFile(@RequestParam(value = "filename") String fileName,
+			@RequestParam(value = "activityid", required = false, defaultValue = "-1") String activityId,
+			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("flag", 0);
 		if (apiOauth(request, response)) {
-			File file=new File(filePath+fileName);
-			if(file.exists()) {
+			File file = new File(filePath + fileName);
+			if (file.exists()) {
 				file.delete();
 			}
-			//delete from db
-			if(!("-1".equals(activityId)||StringUtils.isBlank(activityId))) {
+			// delete from db
+			if (!("-1".equals(activityId) || StringUtils.isBlank(activityId))) {
 				activityService.deletePicture(fileName);
 			}
 			result.put("flag", 1);
 		}
 		return result;
 	}
-	
-	@GetMapping(value="/file/cover")
-	public Map<String,Object> setCover(@RequestParam(value="filename") String fileName, @RequestParam(value="activityid",required=false,defaultValue="-1") String activityId,HttpServletRequest request, HttpServletResponse response){
+
+	@GetMapping(value = "/file/cover")
+	public Map<String, Object> setCover(@RequestParam(value = "filename") String fileName,
+			@RequestParam(value = "activityid", required = false, defaultValue = "-1") String activityId,
+			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("flag", 0);
 		if (apiOauth(request, response)) {
-			//delete from db
-			if(!("-1".equals(activityId)||StringUtils.isBlank(activityId))) {
+			// delete from db
+			if (!("-1".equals(activityId) || StringUtils.isBlank(activityId))) {
 				activityService.deletePicture(fileName);
 			}
 			result.put("flag", 1);
@@ -168,7 +175,8 @@ public class ApiController {
 	}
 
 	@PostMapping(value = "/file/upload")
-	public Map<String, Object> upload(@RequestParam(value="userid") String userId,HttpServletRequest request, HttpServletResponse response) {
+	public Map<String, Object> upload(@RequestParam(value = "userid") String userId, HttpServletRequest request,
+			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (apiOauth(request, response)) {
 			List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
@@ -176,7 +184,7 @@ public class ApiController {
 			MultipartFile file = null;
 
 			BufferedOutputStream stream = null;
-			List<Map<String,String>> fileNameList=new ArrayList<Map<String,String>>();
+			List<Map<String, String>> fileNameList = new ArrayList<Map<String, String>>();
 
 			for (int i = 0; i < files.size(); ++i) {
 
@@ -185,11 +193,11 @@ public class ApiController {
 				if (!file.isEmpty()) {
 
 					try {
-						String fileName=userId+"_"+System.currentTimeMillis()+"_"+file.getOriginalFilename();
+						String fileName = userId + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
 						Map<String, String> fileInfo = new HashMap<String, String>();
 						fileInfo.put("newName", fileName);
 						fileInfo.put("oldName", file.getOriginalFilename());
-						File tmeFile = new File(filePath+fileName);
+						File tmeFile = new File(filePath + fileName);
 						System.out.println(tmeFile.getAbsolutePath());
 						byte[] bytes = file.getBytes();
 
@@ -200,9 +208,9 @@ public class ApiController {
 						stream.write(bytes);
 
 						stream.close();
-						
+
 						fileNameList.add(fileInfo);
-						
+
 					} catch (Exception e) {
 
 						stream = null;
@@ -227,19 +235,18 @@ public class ApiController {
 	}
 
 	@PostMapping(value = "/activity/create")
-	public Map<String, Object> createActivity(
-			@RequestParam(value="activity") String activity, HttpServletRequest request,
-			HttpServletResponse response) {
+	public Map<String, Object> createActivity(@RequestParam(value = "activity") String activity,
+			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		try {
-			String inData=URLDecoder.decode(URLDecoder.decode(activity,"UTF-8"),"UTF-8");
-			System.out.println("indata:"+inData);
-			JSONObject json=JSONObject.fromObject(inData);
+			String inData = URLDecoder.decode(URLDecoder.decode(activity, "UTF-8"), "UTF-8");
+			System.out.println("indata:" + inData);
+			JSONObject json = JSONObject.fromObject(inData);
 			System.out.println(json.get("userid"));
 			if (apiOauth(request, response)) {
 				Map<String, Object> inDataMap = new HashMap<String, Object>();
-				String activityId=RSAUtils.md5(json.get("userid") + String.valueOf(System.currentTimeMillis()));
+				String activityId = RSAUtils.md5(json.get("userid") + String.valueOf(System.currentTimeMillis()));
 				inDataMap.put(Activity.TITLE, json.getString("name"));
 				inDataMap.put(Activity.ID, activityId);
 				inDataMap.put(Activity.DESC, json.getString("description"));
@@ -255,48 +262,50 @@ public class ApiController {
 				inDataMap.put(Activity.LOCATION, json.getJSONObject("address").getString("addstr"));
 				inDataMap.put(Activity.LOCATION_latitude, json.getJSONObject("address").getDouble("latitude"));
 				inDataMap.put(Activity.LOCATION_longitude, json.getJSONObject("address").getDouble("longitude"));
-				GeoHash ghash=new GeoHash(json.getJSONObject("address").getDouble("latitude"),json.getJSONObject("address").getDouble("longitude"));
+				GeoHash ghash = new GeoHash(json.getJSONObject("address").getDouble("latitude"),
+						json.getJSONObject("address").getDouble("longitude"));
 				inDataMap.put(Activity.LOCATION_GEOHASH, ghash.getGeoHashBase32());
-				JSONArray lableList=json.getJSONArray("tag");
-				List<Map<String,Object>> lables=new ArrayList<Map<String,Object>>();
-				for(int i =0;i<lableList.size();i++) {
-					Map<String,Object> map=new HashMap<String,Object>();
+				JSONArray lableList = json.getJSONArray("tag");
+				List<Map<String, Object>> lables = new ArrayList<Map<String, Object>>();
+				for (int i = 0; i < lableList.size(); i++) {
+					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("activity_and_lable_activity_id", activityId);
 					map.put("activity_and_label_label_name", lableList.getJSONObject(i).getString("name"));
-					lables.add(map); 
+					lables.add(map);
 				}
-				
+
 				inDataMap.put("labeList", lables);
-				
-				List<Map<String,Object>> pics=new ArrayList<Map<String,Object>>();
-				
-				JSONArray picList=json.getJSONArray("pic");
-				for(int i =0;i<picList.size();i++) {
-					JSONObject jObject=picList.getJSONObject(i);
-					
-					Map<String,Object> map=new HashMap<String,Object>();
-					
-						map.put("pic_id", RSAUtils.md5(jObject.getString("newname")));
-						map.put("pic_name", jObject.getString("newname"));
-						map.put("pic_creator", json.get("userid"));
-						map.put("pic_activity_id", activityId);
-						map.put("pic_face", jObject.getBoolean("iscover"));
-					
+
+				List<Map<String, Object>> pics = new ArrayList<Map<String, Object>>();
+
+				JSONArray picList = json.getJSONArray("pic");
+				for (int i = 0; i < picList.size(); i++) {
+					JSONObject jObject = picList.getJSONObject(i);
+
+					Map<String, Object> map = new HashMap<String, Object>();
+
+					map.put("pic_id", RSAUtils.md5(jObject.getString("newname")));
+					map.put("pic_name", jObject.getString("newname"));
+					map.put("pic_creator", json.get("userid"));
+					map.put("pic_activity_id", activityId);
+					map.put("pic_face", jObject.getBoolean("iscover"));
+
 					pics.add(map);
 				}
 				inDataMap.put("picList", pics);
-				JSONArray typeList=json.getJSONArray("atype");
-				List<Map<String,Object>> types=new ArrayList<Map<String,Object>>();
-				for(int i =0;i<typeList.size();i++) {
-					Map<String,Object> map=new HashMap<String,Object>();
+				JSONArray typeList = json.getJSONArray("atype");
+				List<Map<String, Object>> types = new ArrayList<Map<String, Object>>();
+				for (int i = 0; i < typeList.size(); i++) {
+					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("activity_and_type_activity_id", activityId);
 					map.put("activity_and_type_type_id", typeList.getJSONObject(i).getString("id"));
 					types.add(map);
 				}
 				inDataMap.put("typeList", types);
-				String flag= String.valueOf(activityService.createActivity(String.valueOf(json.get("userid")), inDataMap).get("flag"));
-				System.out.println(flag+":flag");
-				if("1".equals(flag)){
+				String flag = String.valueOf(
+						activityService.createActivity(String.valueOf(json.get("userid")), inDataMap).get("flag"));
+				System.out.println(flag + ":flag");
+				if ("1".equals(flag)) {
 					return activityService.getActivityInfo(activityId);
 				}
 			} else {
@@ -306,27 +315,185 @@ public class ApiController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return result;
 	}
 
 	@GetMapping(value = "/activity/typelist")
-	public List<Map<String, Object>> getTypeList(HttpServletRequest request,
-			HttpServletResponse response) {
+	public List<Map<String, Object>> getTypeList(HttpServletRequest request, HttpServletResponse response) {
 		if (apiOauth(request, response)) {
 			return activityService.getTypeList();
 		}
-		
+
 		return null;
-		
+
 	}
 
 	@GetMapping(value = "/activity/defaultlabellist")
-	public List<Map<String, Object>> defaultlabellist(HttpServletRequest request,
-			HttpServletResponse response) {
+	public List<Map<String, Object>> defaultlabellist(HttpServletRequest request, HttpServletResponse response) {
 		if (apiOauth(request, response)) {
 			return activityService.getLabelList();
 		}
 		return null;
+	}
+
+	@PostMapping(value = "/activity/save")
+	public Map<String, Object> saveActivity(@RequestParam(value = "activity") String activity,
+			HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("flag", 0);
+		if (apiOauth(request, response)) {
+			// save activity
+
+			try {
+				String inData = URLDecoder.decode(URLDecoder.decode(activity, "UTF-8"), "UTF-8");
+				Map<String, Object> inDataMap = new HashMap<String, Object>();
+				System.out.println("indata:" + inData);
+				JSONObject json = JSONObject.fromObject(inData);
+				String activityId = json.getString("activityid");
+				inDataMap.put(Activity.ID, activityId);
+				
+				if (json.containsKey("name"))
+					inDataMap.put(Activity.TITLE, json.getString("name"));
+
+				if (json.containsKey("note"))
+					inDataMap.put(Activity.NOTE, json.getString("note"));
+
+
+				if (json.containsKey("description"))
+					inDataMap.put(Activity.DESC, json.getString("description"));
+
+				if (json.containsKey("isPublic"))
+					inDataMap.put(Activity.IS_PUBLIC, json.getBoolean("isPublic"));
+
+				if (json.containsKey("limit"))
+					inDataMap.put(Activity.ALLOW_PERSION, json.getInt("limit"));
+
+				if (json.containsKey("userid"))
+					inDataMap.put(Activity.CREATOR, json.getString("userid"));
+
+				if (json.containsKey("endtime"))
+					inDataMap.put(Activity.END, json.getString("endtime"));
+
+				if (json.containsKey("cost"))
+					inDataMap.put(Activity.CHARGE, json.getString("cost"));
+
+				if (json.containsKey("status"))
+					inDataMap.put(Activity.STATUS, json.getString("status"));
+
+				if (json.containsKey("signupstarttime"))
+					inDataMap.put(Activity.SIGN_UP_START, json.getString("signupstarttime"));
+
+				if (json.containsKey("signupendtime"))
+					inDataMap.put(Activity.SIGN_UP_END, json.getString("signupendtime"));
+
+				if (json.containsKey("starttime"))
+					inDataMap.put(Activity.START, json.getString("starttime"));
+
+				if (json.containsKey("address"))
+					inDataMap.put(Activity.LOCATION, json.getJSONObject("address").getString("addstr"));
+
+				if (json.containsKey("address"))
+					inDataMap.put(Activity.LOCATION_latitude, json.getJSONObject("address").getDouble("latitude"));
+
+				if (json.containsKey("address"))
+					inDataMap.put(Activity.LOCATION_longitude, json.getJSONObject("address").getDouble("longitude"));
+
+				if (json.containsKey("address")) {
+					GeoHash ghash = new GeoHash(json.getJSONObject("address").getDouble("latitude"),
+							json.getJSONObject("address").getDouble("longitude"));
+					inDataMap.put(Activity.LOCATION_GEOHASH, ghash.getGeoHashBase32());
+				}
+				// 标签
+				if (json.containsKey("tag")) {
+					JSONObject labelJson = json.getJSONObject("tag");
+					if (labelJson.containsKey("+")) {
+						JSONArray lableNewList = labelJson.getJSONArray("+");
+
+						List<Map<String, Object>> lablesNew = new ArrayList<Map<String, Object>>();
+						for (int i = 0; i < lableNewList.size(); i++) {
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("activity_and_lable_activity_id", activityId);
+							map.put("activity_and_label_label_name", lableNewList.getJSONObject(i).getString("name"));
+							lablesNew.add(map);
+						}
+						inDataMap.put("labeNewList", lablesNew);
+					}
+					if (labelJson.containsKey("-")) {
+						JSONArray lableRemoveList = labelJson.getJSONArray("-");
+						List<Map<String, Object>> lablesRemove = new ArrayList<Map<String, Object>>();
+						for (int i = 0; i < lableRemoveList.size(); i++) {
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("activity_and_lable_activity_id", activityId);
+							map.put("activity_and_label_label_name",
+									lableRemoveList.getJSONObject(i).getString("name"));
+							lablesRemove.add(map);
+						}
+						inDataMap.put("lableRemoveList", lablesRemove);
+					}
+
+				}
+				// 图片
+				if (json.containsKey("pic")) {
+
+					JSONObject picJson = json.getJSONObject("pic");
+					if (picJson.containsKey("+")) {
+						List<Map<String, Object>> picsNew = new ArrayList<Map<String, Object>>();
+						JSONArray picNewList = picJson.getJSONArray("+");
+
+						for (int i = 0; i < picNewList.size(); i++) {
+							JSONObject jObject = picNewList.getJSONObject(i);
+
+							Map<String, Object> map = new HashMap<String, Object>();
+
+							map.put("pic_id", RSAUtils.md5(jObject.getString("newname")));
+							map.put("pic_name", jObject.getString("newname"));
+							map.put("pic_creator", json.get("userid"));
+							map.put("pic_activity_id", activityId);
+							map.put("pic_face", jObject.getBoolean("iscover"));
+
+							picsNew.add(map);
+						}
+						inDataMap.put("picNewList", picsNew);
+					}
+				}
+				// 活动类型
+				if (json.containsKey("atype")) {
+
+					JSONObject typeJson = json.getJSONObject("atype");
+					if (typeJson.containsKey("+")) {
+						List<Map<String, Object>> typesNew = new ArrayList<Map<String, Object>>();
+						JSONArray typeNewList = typeJson.getJSONArray("+");
+						for (int i = 0; i < typeNewList.size(); i++) {
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("activity_and_type_activity_id", activityId);
+							map.put("activity_and_type_type_id", typeNewList.getJSONObject(i).getString("id"));
+							typesNew.add(map);
+						}
+						inDataMap.put("typeNewList", typesNew);
+					}
+					if (typeJson.containsKey("-")) {
+						JSONArray typeRemoveList = typeJson.getJSONArray("-");
+
+						List<Map<String, Object>> typesRemove = new ArrayList<Map<String, Object>>();
+						for (int i = 0; i < typeRemoveList.size(); i++) {
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("activity_and_type_activity_id", activityId);
+							map.put("activity_and_type_type_id", typeRemoveList.getJSONObject(i).getString("id"));
+							typesRemove.add(map);
+						}
+						inDataMap.put("typeRemoveList", typesRemove);
+					}
+				}
+				activityService.saveActivity(inDataMap);
+				result.put("flag", 0);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		return result;
 	}
 }

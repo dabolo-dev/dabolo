@@ -135,4 +135,38 @@
 		update Picture set pic_face=1 where pic_name!=#{picName} and pic_activity_id=#{activityId};
 		update Picture set pic_face=1 where pic_name=#{picName} and pic_activity_id=#{activityId}
 	</update>
+	<update id="editActivity">
+		update Activity 
+		<set>
+		<if test="activity_status != null">activity_status=#{activity_status},</if>
+		<if test="activity_desc != null">activity_desc=#{activity_desc},</if>
+		<if test="activity_sign_up_start != null">activity_sign_up_start=#{activity_sign_up_start} ,</if>
+		<if test="activity_sign_up_end != null">activity_sign_up_end=#{activity_sign_up_end} ,</if>
+		<if test="activity_start != null">activity_start=#{activity_start} ,</if>
+		<if test="activity_end != null">activity_end=#{activity_end} ,</if>
+		<if test="activity_allow_persion != null">activity_allow_persion=#{activity_allow_persion} ,</if>
+		<if test="activity_charge != null">activity_charge=#{activity_charge} ,</if>
+		<if test="activity_location != null">activity_location=#{activity_location} ,</if>
+		<if test="activity_note != null">activity_note=#{activity_note} ,</if>
+		<if test="activity_is_public != null">activity_is_public=#{activity_is_public},</if>
+		<if test="activity_location_latitude != null">activity_location_latitude=#{activity_location_latitude},</if>
+		<if test="activity_location_longitude != null">activity_location_longitude=#{activity_location_longitude},</if>
+		<if test="activity_location_geohash != null">activity_location_geohash=#{activity_location_geohash}</if>
+		</set>
+		where activity_id=#{activity_id}
+	</update>
+	<delete id="removeType">
+	delete from ActivityAndType where activity_and_type_type_id in (
+	<foreach collection="list" item="typeId" open=""
+			separator="," close="">
+			#{typeId}
+		</foreach>) and activity_and_type_activity_id=#{activityId}
+	</delete>
+	<delete id="removeLabel">
+	delete from ActivityAndLabel where activity_and_label_label_name in (
+	<foreach collection="list" item="labelName" open=""
+			separator="," close="">
+			#{labelName}
+		</foreach>) and activity_and_lable_activity_id=#{activityId}
+	</delete>
 </mapper>  
