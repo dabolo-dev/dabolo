@@ -486,7 +486,7 @@ public class ApiController {
 					}
 				}
 				activityService.saveActivity(inDataMap);
-				result.put("flag", 0);
+				result.put("flag", 1);
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
