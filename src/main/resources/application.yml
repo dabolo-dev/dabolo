@@ -1,5 +1,5 @@
 upload:
-  path: D:/dabolofiles/
+  path: d:/dabolofiles/
   maxsize: 5MB
   requestsize: 10MB
 spring:
@@ -9,6 +9,9 @@ spring:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:${upload.path}
   profiles:
     active: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 mybatis:
   mapper-locations: classpath*:mapper/*Mapper.xml
   type-aliases-package: com.smartions.model
@@ -18,8 +21,6 @@ wechat:
 token: 
   secret: 123456
   timeout: 1800
-activity: 
-  distance: 2000
 
   
  
