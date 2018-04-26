@@ -130,7 +130,7 @@ public class UserService implements IUserService {
 
 	@Override
 	@Transactional
-	public void signUpActivity(String userId, String activityId,boolean flag) {
+	public void signUpActivity(String userId, String activityId,boolean flag,int persionCount,String note) {
 		// TODO Auto-generated method stub
 		//判断用户与活动是否存在关系
 		Map<String, Object> map=userMapper.getUserAndActivity(userId, activityId);
@@ -140,12 +140,16 @@ public class UserService implements IUserService {
 			userAndActivity.put("userId", userId);
 			userAndActivity.put("activityId", activityId);
 			userAndActivity.put("activity_and_user_participate", flag);
+			userAndActivity.put("activity_and_user_persion_count", persionCount);
+			userAndActivity.put("activity_and_user_note", note);
 			userMapper.editUserAndActivity(userAndActivity);
 		}else {//不存在
 			if(flag) {
 				userAndActivity.put("activity_and_user_user_id", userId);
 				userAndActivity.put("activity_and_user_activity_id", activityId);
 				userAndActivity.put("activity_and_user_participate", flag);
+				userAndActivity.put("activity_and_user_persion_count", persionCount);
+				userAndActivity.put("activity_and_user_note", note);
 				userMapper.saveUserAndActivity(userAndActivity);
 			}
 			
@@ -161,6 +165,7 @@ public class UserService implements IUserService {
 		userAndActivity.put("userId", userId);
 		userAndActivity.put("activityId", activityId);
 		userAndActivity.put("activity_and_user_signin", true);
+		
 		userMapper.editUserAndActivity(userAndActivity);
 	}
 

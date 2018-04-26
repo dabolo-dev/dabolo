@@ -502,11 +502,13 @@ public class ApiController {
 	@GetMapping(value = "user/signupActivity")
 	public Map<String, Object> signupActivity(@RequestParam(value = "userid") String userId,
 			@RequestParam(value = "activityid") String activityId, @RequestParam(value = "flag") String falg,
+			@RequestParam(value = "persioncount") String persionCount,
+			@RequestParam(value = "note",required=false) String note,
 			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("flag", 0);
 		if (apiOauth(request, response)) {
-			userService.signUpActivity(userId, activityId, Boolean.parseBoolean(falg));
+			userService.signUpActivity(userId, activityId, Boolean.parseBoolean(falg),Integer.parseInt(persionCount),note);
 			result.put("flag", 1);
 		}
 		return result;
@@ -523,6 +525,7 @@ public class ApiController {
 				JSONObject json = JSONObject.fromObject(inData);
 				String activityId = json.getString("activityid");
 				String userId = json.getString("userid");
+				
 				//获取活动信息
 				Map<String, Object> activityInfo=activityService.getActivityInfo(activityId);
 				//计算打卡位置是否在允许打卡范围内
