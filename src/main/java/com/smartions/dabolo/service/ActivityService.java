@@ -52,6 +52,7 @@ public class ActivityService implements IActivityService {
 				map.put("typelist", mapTypeList);
 				map.put("labellist", mapLabelList);
 				map.put("piclist", mapPicList);
+				map.put("participateCount", activityMapper.getParticipateList(activityId).size());
 			}
 		}
 		return activityList;
