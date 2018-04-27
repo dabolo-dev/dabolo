@@ -1,6 +1,9 @@
 package com.smartions.dabolo.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +20,51 @@ public class ActivityService implements IActivityService {
 	@Autowired
 	private ActivityMapper activityMapper;
 
+	private long dateToStamp(String dateStr) throws ParseException {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = simpleDateFormat.parse(dateStr);
+		long ts = date.getTime();
+		return ts;
+	}
+
+	private void setActivityStatus(Map<String, Object> map, long now) {
+		try {
+			long start = dateToStamp(map.get("activity_start").toString());
+			long signupStart = dateToStamp(map.get("activity_sign_up_start").toString());
+			long sinupEnd = dateToStamp(map.get("activity_sign_up_end").toString());
+			if ("cancel".equals(map.get("activity_status")) || "finish".equals(map.get("activity_status"))
+					|| "draft".equals(map.get("activity_status"))) {
+				return;
+			}
+			// 在报名开始之前：发布中
+			if (now < signupStart) {
+				map.put("activity_status", "publish");
+			}
+			// 报名开始到报名结束：报名中
+			if (now >= signupStart && now < sinupEnd) {
+				map.put("activity_status", "signuping");
+			}
+			// 报名结束到活动开始：准备中
+			if (now >= sinupEnd && now < start) {
+				map.put("activity_status", "reading");
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	@Override
 	public List<Map<String, Object>> getActivityList() {
 		List<Map<String, Object>> activityList = activityMapper.getActivityList();
 		List<String> activityIds = new ArrayList<String>();
+		long now = System.currentTimeMillis();
 		for (Map<String, Object> map : activityList) {
-			System.out.println(String.valueOf(map.get("activity_id"))+"+:activityId in");
+			System.out.println(String.valueOf(map.get("activity_id")) + "+:activityId in");
 			activityIds.add(String.valueOf(map.get("activity_id")));
+			// 设置活动状态
+			setActivityStatus(map, now);
 		}
 		if (activityIds.size() > 0) {
 
@@ -32,7 +73,7 @@ public class ActivityService implements IActivityService {
 			List<Map<String, Object>> piclist = activityMapper.getActivityPic(activityIds);
 			for (Map<String, Object> map : activityList) {
 				String activityId = String.valueOf(map.get("activity_id"));
-				System.out.println(activityId+"+:activityId");
+				System.out.println(activityId + "+:activityId");
 				List<Map<String, Object>> mapTypeList = new ArrayList<Map<String, Object>>();
 				for (Map<String, Object> type : typelist) {
 					if (activityId.equals(type.get("activity_and_type_activity_id"))) {
@@ -54,10 +95,10 @@ public class ActivityService implements IActivityService {
 				map.put("typelist", mapTypeList);
 				map.put("labellist", mapLabelList);
 				map.put("piclist", mapPicList);
-				List<Map<String, Object>> userAndActivityList=activityMapper.getParticipateList(activityId);
-				int count=0;
-				for(Map<String, Object> uaa:userAndActivityList) {
-					count+=Integer.parseInt(uaa.get("activity_and_user_persion_count").toString());
+				List<Map<String, Object>> userAndActivityList = activityMapper.getParticipateList(activityId);
+				int count = 0;
+				for (Map<String, Object> uaa : userAndActivityList) {
+					count += Integer.parseInt(uaa.get("activity_and_user_persion_count").toString());
 				}
 				map.put("participateCount", count);
 			}
@@ -69,7 +110,9 @@ public class ActivityService implements IActivityService {
 	public Map<String, Object> getActivityInfo(String activityId) {
 		// TODO Auto-generated method stub
 		Map<String, Object> activity = activityMapper.getActivityInfo(activityId);
+		long now = System.currentTimeMillis();
 		if (activity != null) {
+			setActivityStatus(activity, now);
 			List<String> activityIds = new ArrayList<String>();
 			activityIds.add(activityId);
 			activity.put("typelist", activityMapper.getActivityType(activityIds));
@@ -148,7 +191,7 @@ public class ActivityService implements IActivityService {
 			// 删除类型
 			List<Map<String, Object>> typeRemoveList = (List<Map<String, Object>>) activityMap.get("typeRemoveList");
 			if (typeList.size() > 0) {
-				activityMapper.removeType(typeRemoveList,activityMap.get(Activity.ID).toString());
+				activityMapper.removeType(typeRemoveList, activityMap.get(Activity.ID).toString());
 			}
 
 			// 保存新增标签
@@ -160,7 +203,7 @@ public class ActivityService implements IActivityService {
 			// 删除标签
 			List<Map<String, Object>> labeRemovelList = (List<Map<String, Object>>) activityMap.get("labeRemoveList");
 			if (labelList.size() > 0) {
-				activityMapper.removeLabel(labeRemovelList,activityMap.get(Activity.ID).toString());
+				activityMapper.removeLabel(labeRemovelList, activityMap.get(Activity.ID).toString());
 			}
 
 			// 保存新增图片
