@@ -85,7 +85,7 @@
 			#{activity_and_user_praise},
 		</if>
 		<if test="activity_and_user_attention != null">
-			#{activity_and_user_attention}
+			#{activity_and_user_attention},
 		</if>
 		<if test="activity_and_user_attention != null">
 			#{activity_and_user_persion_count},
