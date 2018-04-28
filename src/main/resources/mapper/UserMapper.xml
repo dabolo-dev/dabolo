@@ -79,7 +79,7 @@
 		#{activity_and_user_activity_id},
 		now(),
 		<if test="activity_and_user_participate != null">
-			activity_and_user_participate},
+			#{activity_and_user_participate},
 		</if>
 		<if test="activity_and_user_praise != null">
 			#{activity_and_user_praise},
