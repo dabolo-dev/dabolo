@@ -46,7 +46,7 @@ public class ActivityService implements IActivityService {
 			}
 			// 报名结束到活动开始：准备中
 			if (now >= sinupEnd && now < start) {
-				map.put("activity_status", "reading");
+				map.put("activity_status", "preparing");
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
