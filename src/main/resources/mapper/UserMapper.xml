@@ -42,10 +42,10 @@
 			</if>
 			<if test="activity_and_user_signin != null">activity_and_user_signin=#{activity_and_user_signin},
 			</if>
-			<if test="activity_and_user_attention != null">
+			<if test="activity_and_user_persion_count != null">
 				activity_and_user_persion_count=#{activity_and_user_persion_count},
 			</if>
-			<if test="activity_and_user_attention != null">
+			<if test="activity_and_user_note != null">
 				activity_and_user_note=#{activity_and_user_note}
 			</if>
 		</set>
@@ -67,10 +67,10 @@
 		<if test="activity_and_user_attention != null">
 			activity_and_user_attention,
 		</if>
-		<if test="activity_and_user_attention != null">
+		<if test="activity_and_user_persion_count != null">
 			activity_and_user_persion_count,
 		</if>
-		<if test="activity_and_user_attention != null">
+		<if test="activity_and_user_note != null">
 			activity_and_user_note
 		</if>
 		)
@@ -87,10 +87,10 @@
 		<if test="activity_and_user_attention != null">
 			#{activity_and_user_attention},
 		</if>
-		<if test="activity_and_user_attention != null">
+		<if test="activity_and_user_persion_count != null">
 			#{activity_and_user_persion_count},
 		</if>
-		<if test="activity_and_user_attention != null">
+		<if test="activity_and_user_note != null">
 			#{activity_and_user_note}
 		</if>
 		);
