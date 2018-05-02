@@ -132,7 +132,7 @@ public class UserService implements IUserService {
 
 	@Override
 	@Transactional
-	public void signUpActivity(String userId, String activityId,boolean flag,int persionCount,String note) {
+	public int signUpActivity(String userId, String activityId,boolean flag,int persionCount,String note) {
 		// TODO Auto-generated method stub
 		//判断用户与活动是否存在关系
 		Map<String, Object> map=userMapper.getUserAndActivity(userId, activityId);
@@ -146,11 +146,7 @@ public class UserService implements IUserService {
 					count += Integer.parseInt(uaa.get("activity_and_user_persion_count").toString());
 				}
 				if(count+persionCount>limitCount) {
-					try {
-						throw new Exception("activity_allow_persion no");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					return -1;
 				}
 			}
 			
@@ -176,6 +172,7 @@ public class UserService implements IUserService {
 			}
 			
 		}
+		return 1;
 		
 	}
 

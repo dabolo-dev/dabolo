@@ -508,8 +508,8 @@ public class ApiController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("flag", 0);
 		if (apiOauth(request, response)) {
-			userService.signUpActivity(userId, activityId, Boolean.parseBoolean(falg),Integer.parseInt(persionCount),note);
-			result.put("flag", 1);
+			int flag=userService.signUpActivity(userId, activityId, Boolean.parseBoolean(falg),Integer.parseInt(persionCount),note);
+			result.put("flag", flag);
 		}
 		return result;
 	}
