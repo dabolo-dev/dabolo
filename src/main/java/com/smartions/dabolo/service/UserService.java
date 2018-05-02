@@ -137,9 +137,11 @@ public class UserService implements IUserService {
 		//判断用户与活动是否存在关系
 		Map<String, Object> map=userMapper.getUserAndActivity(userId, activityId);
 		Map<String, Object> activity = activityMapper.getActivityInfo(activityId);
-		if(!"0".equals(activity.get("activity_allow_persion"))) {
+		if(activity==null) return -2;
+		int limitCount=Integer.parseInt(activity.get("activity_allow_persion").toString());
+		if(limitCount!=0) {
 			if(flag) {
-				int limitCount=Integer.parseInt(activity.get("activity_allow_persion").toString());
+				
 				int count = 0;
 				List<Map<String, Object>> userAndActivityList = activityMapper.getParticipateList(activityId);
 				for (Map<String, Object> uaa : userAndActivityList) {

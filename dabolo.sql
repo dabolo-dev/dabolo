@@ -99,16 +99,19 @@ DROP TABLE IF EXISTS `Comment`;
 CREATE TABLE `Comment` (
   `comment_id` char(32) NOT NULL,
   `comment_desc` varchar(255) NOT NULL,
-  `comment_pic_id` char(32) DEFAULT NULL,
   `comment_creator` char(32) NOT NULL,
-  `comment_time` datetime NOT NULL,
-  `comment_location` varchar(255) DEFAULT NULL
+  `comment_time` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of Comment
 -- ----------------------------
-
+DROP TABLE IF EXISTS `CommentAndPic`;
+CREATE TABLE `CommentAndPic` (
+  `comment_and_pic_pic_id` char(32) NOT NULL,
+  `comment_and_pic_comment_id` char(32) NOT NULL,
+  PRIMARY KEY (`comment_and_pic_comment_id`,`comment_and_pic_pic_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- ----------------------------
 -- Table structure for `Label`
 -- ----------------------------

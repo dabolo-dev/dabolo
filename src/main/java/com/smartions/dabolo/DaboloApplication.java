@@ -1,9 +1,5 @@
 package com.smartions.dabolo;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.MultipartConfigElement;
 
 import org.mybatis.spring.annotation.MapperScan;
@@ -12,10 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartions.dabolo.model.UploadFile;
 
 @SpringBootApplication
