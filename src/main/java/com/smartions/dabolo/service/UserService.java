@@ -1,5 +1,6 @@
 package com.smartions.dabolo.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,9 @@ import com.smartions.dabolo.model.Third;
 import com.smartions.dabolo.model.User;
 import com.smartions.dabolo.utils.AES;
 import com.smartions.dabolo.utils.RSAUtils;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service
 public class UserService implements IUserService {
@@ -347,6 +351,50 @@ public class UserService implements IUserService {
 			}
 		}
 		return activityList;
+	}
+
+	@Override
+	@Transactional
+	public void commentActivity(Map<String, Object> result) {
+		Map<String,Object> comment=new HashMap<String,Object>();
+		try {
+			String commentId = RSAUtils.md5(result.get("userId") + String.valueOf(System.currentTimeMillis()));
+			//1.创建评论
+			comment.put("comment_id", commentId);
+			comment.put("comment_desc", result.get("comment"));
+			comment.put("comment_creator", result.get("userId"));
+			comment.put("comment_object", result.get("commentObject"));
+			userMapper.saveComment(comment);
+			//保存评论与图片关系
+			List<Map<String, Object>> fileNameList=(List<Map<String, Object>>) result.get("fileList");
+			if(fileNameList.size()>0) {
+				List<Map<String, Object>> pics = new ArrayList<Map<String, Object>>();
+				List<Map<String, Object>> picsAndComment = new ArrayList<Map<String, Object>>();
+
+				for (Map<String, Object> fileName:fileNameList) {
+
+					Map<String, Object> map = new HashMap<String, Object>();
+					Map<String, Object> mapCommentAndPic = new HashMap<String, Object>();
+					map.put("pic_id", RSAUtils.md5(fileName.get("newname").toString()));
+					map.put("pic_name", fileName.get("newname"));
+					map.put("pic_creator", fileName.get("userid"));
+					map.put("pic_activity_id", result.get("commentObject"));
+					map.put("pic_face", false);
+					mapCommentAndPic.put("comment_and_pic_pic_id", map.get("pic_id"));
+					mapCommentAndPic.put("comment_and_pic_comment_id", commentId);
+					pics.add(map);
+					picsAndComment.add(mapCommentAndPic);
+				}
+				activityMapper.savePic(pics);
+				userMapper.saveCommentAndPic(picsAndComment);
+			}
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		
 	}
 
 }

@@ -97,13 +97,34 @@
 
 	</insert>
 	<select id="organizationActivity" resultType="hashMap">
-	select * from Activity where activity_creator=#{userId};
+		select * from Activity where activity_creator=#{userId};
 	</select>
 	<select id="participateActivity" resultType="hashMap">
-	select * from Activity where activity_id in ( select activity_and_user_activity_id from ActivityAndUser where activity_and_user_user_id=#{userId} and activity_and_user_participate=1);
+		select * from Activity where activity_id in ( select
+		activity_and_user_activity_id from ActivityAndUser where
+		activity_and_user_user_id=#{userId} and
+		activity_and_user_participate=1);
 	</select>
 	<select id="attentionActivity" resultType="hashMap">
-		select * from Activity where activity_id in ( select activity_and_user_activity_id from ActivityAndUser where activity_and_user_user_id=#{userId});
-	
+		select * from Activity
+		where activity_id in ( select activity_and_user_activity_id from
+		ActivityAndUser where activity_and_user_user_id=#{userId});
+
 	</select>
+	<insert id="saveComment">
+		insert into
+		Comment(comment_id,comment_desc,comment_creator,comment_time,comment_object)
+		values
+		(#{comment_id},#{comment_desc},#{comment_creator},now(),#{comment_object});
+	</insert>
+	<insert id="saveCommentAndPic">
+		insert into CommentAndPic(comment_and_pic_pic_id,comment_and_pic_comment_id) values
+		<foreach collection="list" item="item" open="" separator=","
+			close="">
+			(
+			#{item.comment_and_pic_pic_id} ,
+			#{item.comment_and_pic_comment_id} 
+			)
+		</foreach>
+	</insert>
 </mapper>  

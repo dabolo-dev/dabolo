@@ -19,5 +19,7 @@ public interface UserMapper {
 	public List<Map<String,Object>> organizationActivity(Map<String,Object> userAndActivity);
 	public List<Map<String,Object>> participateActivity(Map<String,Object>  userAndActivity);
 	public List<Map<String,Object>> attentionActivity(Map<String,Object>  userAndActivity);
+	public int saveComment(Map<String,Object> comment);
+	public int saveCommentAndPic(List<Map<String,Object>> comments);
 	
 }

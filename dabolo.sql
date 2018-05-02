@@ -100,8 +100,11 @@ CREATE TABLE `Comment` (
   `comment_id` char(32) NOT NULL,
   `comment_desc` varchar(255) NOT NULL,
   `comment_creator` char(32) NOT NULL,
-  `comment_time` datetime NOT NULL
+  `comment_time` datetime NOT NULL,
+  `comment_object` char(32) NOT NULL,
+  PRIMARY KEY (`comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- ----------------------------
 -- Records of Comment

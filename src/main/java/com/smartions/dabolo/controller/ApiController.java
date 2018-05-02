@@ -597,4 +597,70 @@ public class ApiController {
 		}
 		return null;
 	}
+	
+	@PostMapping(value="user/comment")
+	public Map<String, Object> commentActivity(@RequestParam(value = "userid") String userId,@RequestParam(value = "activityid") String activityId,@RequestParam(value = "comment") String comment,
+			HttpServletRequest request, HttpServletResponse response){
+		Map<String, Object> result = new HashMap<String, Object>();
+		if (apiOauth(request, response)) {
+			List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+
+			MultipartFile file = null;
+
+			BufferedOutputStream stream = null;
+			List<Map<String, String>> fileNameList = new ArrayList<Map<String, String>>();
+
+			for (int i = 0; i < files.size(); ++i) {
+
+				file = files.get(i);
+
+				if (!file.isEmpty()) {
+
+					try {
+						String fileName = userId + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+						Map<String, String> fileInfo = new HashMap<String, String>();
+						fileInfo.put("newName", fileName);
+						fileInfo.put("oldName", file.getOriginalFilename());
+						File tmeFile = new File(filePath + fileName);
+						System.out.println(tmeFile.getAbsolutePath());
+						byte[] bytes = file.getBytes();
+
+						stream =
+
+								new BufferedOutputStream(new FileOutputStream(tmeFile));
+
+						stream.write(bytes);
+
+						stream.close();
+
+						fileNameList.add(fileInfo);
+
+					} catch (Exception e) {
+
+						stream = null;
+						result.put("flag", 0);
+
+					}
+
+				} else {
+					result.put("flag", -1);
+				}
+
+			}
+			result.put("flag", 1);
+			result.put("fileList", fileNameList);
+			result.put("commentObject", activityId);
+			result.put("comment", comment);
+			result.put("userId", userId);
+			
+			//添加评论
+			userService.commentActivity(result);
+		} else
+
+		{
+			result.put("flag", -2);
+		}
+		
+		return result;
+	}
 }
