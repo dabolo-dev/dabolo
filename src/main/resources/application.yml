@@ -21,6 +21,8 @@ wechat:
 token: 
   secret: 123456
   timeout: 1800
+activity: 
+  distance: 2000
 
   
  
