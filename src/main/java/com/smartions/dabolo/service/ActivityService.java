@@ -20,14 +20,14 @@ public class ActivityService implements IActivityService {
 	@Autowired
 	private ActivityMapper activityMapper;
 
-	private long dateToStamp(String dateStr) throws ParseException {
+	public static final long dateToStamp(String dateStr) throws ParseException {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = simpleDateFormat.parse(dateStr);
 		long ts = date.getTime();
 		return ts;
 	}
 
-	private void setActivityStatus(Map<String, Object> map, long now) {
+	public static final void setActivityStatus(Map<String, Object> map, long now) {
 		try {
 			long start = dateToStamp(map.get("activity_start").toString());
 			long signupStart = dateToStamp(map.get("activity_sign_up_start").toString());

@@ -547,4 +547,54 @@ public class ApiController {
 		}
 		return result;
 	}
+	
+	@GetMapping(value="user/organization")
+	public List<Map<String, Object>> organizationActivity(@RequestParam(value = "userid") String userId,
+			HttpServletRequest request, HttpServletResponse response){
+		if (apiOauth(request, response)) {
+			try {
+				
+			return	userService.organizationActivity(userId);
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		return null;
+	}
+	
+	@GetMapping(value="user/participate")
+	public List<Map<String, Object>> participateActivity(@RequestParam(value = "userid") String userId,
+			HttpServletRequest request, HttpServletResponse response){
+		if (apiOauth(request, response)) {
+			try {
+				
+			return	userService.participateActivity(userId);
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		return null;
+	}
+	@GetMapping(value="user/attention")
+	public List<Map<String, Object>> attentionActivity(@RequestParam(value = "userid") String userId,
+			HttpServletRequest request, HttpServletResponse response){
+		if (apiOauth(request, response)) {
+			try {
+				
+			return	userService.attentionActivity(userId);
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		return null;
+	}
 }

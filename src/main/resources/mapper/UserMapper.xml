@@ -96,4 +96,14 @@
 		);
 
 	</insert>
+	<select id="organizationActivity" resultType="hashMap">
+	select * from Activity where activity_creator=#{userId};
+	</select>
+	<select id="participateActivity" resultType="hashMap">
+	select * from Activity where activity_id in ( select activity_and_user_activity_id from ActivityAndUser where activity_and_user_user_id=#{userId} and activity_and_user_participate=1);
+	</select>
+	<select id="attentionActivity" resultType="hashMap">
+		select * from Activity where activity_id in ( select activity_and_user_activity_id from ActivityAndUser where activity_and_user_user_id=#{userId});
+	
+	</select>
 </mapper>  

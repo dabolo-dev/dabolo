@@ -1,5 +1,6 @@
 package com.smartions.dabolo.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
@@ -15,5 +16,8 @@ public interface UserMapper {
 	public Map<String,Object> getUserAndActivity(@Param("userId") String userId,@Param("activityId") String activityId);
 	public int editUserAndActivity(Map<String,Object> userAndActivity);
 	public int saveUserAndActivity(Map<String,Object> userAndActivity);
+	public List<Map<String,Object>> organizationActivity(Map<String,Object> userAndActivity);
+	public List<Map<String,Object>> participateActivity(Map<String,Object>  userAndActivity);
+	public List<Map<String,Object>> attentionActivity(Map<String,Object>  userAndActivity);
 	
 }

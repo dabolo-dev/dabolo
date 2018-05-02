@@ -1,28 +1,30 @@
 package com.smartions.dabolo.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.smartions.dabolo.mapper.ActivityMapper;
 import com.smartions.dabolo.mapper.UserMapper;
 import com.smartions.dabolo.model.Third;
-import com.smartions.dabolo.model.Token;
 import com.smartions.dabolo.model.User;
 import com.smartions.dabolo.utils.AES;
 import com.smartions.dabolo.utils.RSAUtils;
-
-import net.sf.json.JSONObject;
 
 @Service
 public class UserService implements IUserService {
 	@Autowired
 	private UserMapper userMapper;
+	
+	@Autowired
+	private ActivityMapper activityMapper;
 
 	@Autowired
 	ITokenService tokenService;
@@ -134,7 +136,27 @@ public class UserService implements IUserService {
 		// TODO Auto-generated method stub
 		//判断用户与活动是否存在关系
 		Map<String, Object> map=userMapper.getUserAndActivity(userId, activityId);
+		Map<String, Object> activity = activityMapper.getActivityInfo(activityId);
+		if(!"0".equals(activity.get("activity_allow_persion"))) {
+			if(flag) {
+				int limitCount=Integer.parseInt(activity.get("activity_allow_persion").toString());
+				int count = 0;
+				List<Map<String, Object>> userAndActivityList = activityMapper.getParticipateList(activityId);
+				for (Map<String, Object> uaa : userAndActivityList) {
+					count += Integer.parseInt(uaa.get("activity_and_user_persion_count").toString());
+				}
+				if(count+persionCount>limitCount) {
+					try {
+						throw new Exception("activity_allow_persion no");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		}
 		Map<String, Object> userAndActivity=new HashMap<String,Object>();
+		//判断报名人数限制
 		if(map!=null) {//存在
 			
 			userAndActivity.put("userId", userId);
@@ -167,6 +189,165 @@ public class UserService implements IUserService {
 		userAndActivity.put("activity_and_user_signin", true);
 		
 		userMapper.editUserAndActivity(userAndActivity);
+	}
+
+	@Override
+	public List<Map<String, Object>> organizationActivity(String userId) {
+		Map<String, Object> userAndActivity=new HashMap<String,Object>();
+		userAndActivity.put("userId", userId);
+		List<Map<String, Object>> activityList = userMapper.organizationActivity(userAndActivity);
+		List<String> activityIds = new ArrayList<String>();
+		long now = System.currentTimeMillis();
+		for (Map<String, Object> map : activityList) {
+			System.out.println(String.valueOf(map.get("activity_id")) + "+:activityId in");
+			activityIds.add(String.valueOf(map.get("activity_id")));
+			// 设置活动状态
+			ActivityService.setActivityStatus(map, now);
+		}
+		if (activityIds.size() > 0) {
+
+			List<Map<String, Object>> typelist = activityMapper.getActivityType(activityIds);
+			List<Map<String, Object>> labellist = activityMapper.getActivityLabel(activityIds);
+			List<Map<String, Object>> piclist = activityMapper.getActivityPic(activityIds);
+			for (Map<String, Object> map : activityList) {
+				String activityId = String.valueOf(map.get("activity_id"));
+				System.out.println(activityId + "+:activityId");
+				List<Map<String, Object>> mapTypeList = new ArrayList<Map<String, Object>>();
+				for (Map<String, Object> type : typelist) {
+					if (activityId.equals(type.get("activity_and_type_activity_id"))) {
+						mapTypeList.add(type);
+					}
+				}
+				List<Map<String, Object>> mapLabelList = new ArrayList<Map<String, Object>>();
+				for (Map<String, Object> label : labellist) {
+					if (activityId.equals(label.get("activity_and_lable_activity_id"))) {
+						mapLabelList.add(label);
+					}
+				}
+				List<Map<String, Object>> mapPicList = new ArrayList<Map<String, Object>>();
+				for (Map<String, Object> pic : piclist) {
+					if (activityId.equals(pic.get("pic_activity_id"))) {
+						mapPicList.add(pic);
+					}
+				}
+				map.put("typelist", mapTypeList);
+				map.put("labellist", mapLabelList);
+				map.put("piclist", mapPicList);
+				List<Map<String, Object>> userAndActivityList = activityMapper.getParticipateList(activityId);
+				int count = 0;
+				for (Map<String, Object> uaa : userAndActivityList) {
+					count += Integer.parseInt(uaa.get("activity_and_user_persion_count").toString());
+				}
+				map.put("participateCount", count);
+			}
+		}
+		return activityList;
+	}
+
+	@Override
+	public List<Map<String, Object>> participateActivity(String userId) {
+		Map<String, Object> userAndActivity=new HashMap<String,Object>();
+		userAndActivity.put("userId", userId);
+		List<Map<String, Object>> activityList = userMapper.participateActivity(userAndActivity);
+		List<String> activityIds = new ArrayList<String>();
+		long now = System.currentTimeMillis();
+		for (Map<String, Object> map : activityList) {
+			System.out.println(String.valueOf(map.get("activity_id")) + "+:activityId in");
+			activityIds.add(String.valueOf(map.get("activity_id")));
+			// 设置活动状态
+			ActivityService.setActivityStatus(map, now);
+		}
+		if (activityIds.size() > 0) {
+
+			List<Map<String, Object>> typelist = activityMapper.getActivityType(activityIds);
+			List<Map<String, Object>> labellist = activityMapper.getActivityLabel(activityIds);
+			List<Map<String, Object>> piclist = activityMapper.getActivityPic(activityIds);
+			for (Map<String, Object> map : activityList) {
+				String activityId = String.valueOf(map.get("activity_id"));
+				System.out.println(activityId + "+:activityId");
+				List<Map<String, Object>> mapTypeList = new ArrayList<Map<String, Object>>();
+				for (Map<String, Object> type : typelist) {
+					if (activityId.equals(type.get("activity_and_type_activity_id"))) {
+						mapTypeList.add(type);
+					}
+				}
+				List<Map<String, Object>> mapLabelList = new ArrayList<Map<String, Object>>();
+				for (Map<String, Object> label : labellist) {
+					if (activityId.equals(label.get("activity_and_lable_activity_id"))) {
+						mapLabelList.add(label);
+					}
+				}
+				List<Map<String, Object>> mapPicList = new ArrayList<Map<String, Object>>();
+				for (Map<String, Object> pic : piclist) {
+					if (activityId.equals(pic.get("pic_activity_id"))) {
+						mapPicList.add(pic);
+					}
+				}
+				map.put("typelist", mapTypeList);
+				map.put("labellist", mapLabelList);
+				map.put("piclist", mapPicList);
+				List<Map<String, Object>> userAndActivityList = activityMapper.getParticipateList(activityId);
+				int count = 0;
+				for (Map<String, Object> uaa : userAndActivityList) {
+					count += Integer.parseInt(uaa.get("activity_and_user_persion_count").toString());
+				}
+				map.put("participateCount", count);
+			}
+		}
+		return activityList;
+	}
+
+	@Override
+	public List<Map<String, Object>> attentionActivity(String userId) {
+		Map<String, Object> userAndActivity=new HashMap<String,Object>();
+		userAndActivity.put("userId", userId);
+		List<Map<String, Object>> activityList = userMapper.attentionActivity(userAndActivity);
+		List<String> activityIds = new ArrayList<String>();
+		long now = System.currentTimeMillis();
+		for (Map<String, Object> map : activityList) {
+			System.out.println(String.valueOf(map.get("activity_id")) + "+:activityId in");
+			activityIds.add(String.valueOf(map.get("activity_id")));
+			// 设置活动状态
+			ActivityService.setActivityStatus(map, now);
+		}
+		if (activityIds.size() > 0) {
+
+			List<Map<String, Object>> typelist = activityMapper.getActivityType(activityIds);
+			List<Map<String, Object>> labellist = activityMapper.getActivityLabel(activityIds);
+			List<Map<String, Object>> piclist = activityMapper.getActivityPic(activityIds);
+			for (Map<String, Object> map : activityList) {
+				String activityId = String.valueOf(map.get("activity_id"));
+				System.out.println(activityId + "+:activityId");
+				List<Map<String, Object>> mapTypeList = new ArrayList<Map<String, Object>>();
+				for (Map<String, Object> type : typelist) {
+					if (activityId.equals(type.get("activity_and_type_activity_id"))) {
+						mapTypeList.add(type);
+					}
+				}
+				List<Map<String, Object>> mapLabelList = new ArrayList<Map<String, Object>>();
+				for (Map<String, Object> label : labellist) {
+					if (activityId.equals(label.get("activity_and_lable_activity_id"))) {
+						mapLabelList.add(label);
+					}
+				}
+				List<Map<String, Object>> mapPicList = new ArrayList<Map<String, Object>>();
+				for (Map<String, Object> pic : piclist) {
+					if (activityId.equals(pic.get("pic_activity_id"))) {
+						mapPicList.add(pic);
+					}
+				}
+				map.put("typelist", mapTypeList);
+				map.put("labellist", mapLabelList);
+				map.put("piclist", mapPicList);
+				List<Map<String, Object>> userAndActivityList = activityMapper.getParticipateList(activityId);
+				int count = 0;
+				for (Map<String, Object> uaa : userAndActivityList) {
+					count += Integer.parseInt(uaa.get("activity_and_user_persion_count").toString());
+				}
+				map.put("participateCount", count);
+			}
+		}
+		return activityList;
 	}
 
 }
