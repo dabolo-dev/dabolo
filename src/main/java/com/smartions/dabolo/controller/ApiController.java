@@ -603,12 +603,13 @@ public class ApiController {
 			HttpServletRequest request, HttpServletResponse response){
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (apiOauth(request, response)) {
+			List<Map<String, String>> fileNameList = new ArrayList<Map<String, String>>();
+			try {
 			List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
-
 			MultipartFile file = null;
 
 			BufferedOutputStream stream = null;
-			List<Map<String, String>> fileNameList = new ArrayList<Map<String, String>>();
+			
 
 			for (int i = 0; i < files.size(); ++i) {
 
@@ -647,14 +648,20 @@ public class ApiController {
 				}
 
 			}
-			result.put("flag", 1);
-			result.put("fileList", fileNameList);
-			result.put("commentObject", activityId);
-			result.put("comment", comment);
-			result.put("userId", userId);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				result.put("flag", 1);
+				result.put("fileList", fileNameList);
+				result.put("commentObject", activityId);
+				result.put("comment", comment);
+				result.put("userId", userId);
+				
+				//添加评论
+				userService.commentActivity(result);
+			}
 			
-			//添加评论
-			userService.commentActivity(result);
+			
 		} else
 
 		{
