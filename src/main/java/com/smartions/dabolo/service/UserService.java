@@ -375,9 +375,9 @@ public class UserService implements IUserService {
 
 					Map<String, Object> map = new HashMap<String, Object>();
 					Map<String, Object> mapCommentAndPic = new HashMap<String, Object>();
-					map.put("pic_id", RSAUtils.md5(fileName.get("newname").toString()));
-					map.put("pic_name", fileName.get("newname"));
-					map.put("pic_creator", fileName.get("userid"));
+					map.put("pic_id", fileName.get("pic_id").toString());
+					map.put("pic_name", fileName.get("pic_name"));
+					map.put("pic_creator", fileName.get("pic_creator"));
 					map.put("pic_activity_id", result.get("commentObject"));
 					map.put("pic_face", false);
 					mapCommentAndPic.put("comment_and_pic_pic_id", map.get("pic_id"));
