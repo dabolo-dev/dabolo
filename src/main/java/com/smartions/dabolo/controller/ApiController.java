@@ -55,7 +55,7 @@ public class ApiController {
 
 	@Value("${upload.path}")
 	private String filePath;
-	
+
 	@Value("activity.distance")
 	private String distance;
 
@@ -503,12 +503,13 @@ public class ApiController {
 	public Map<String, Object> signupActivity(@RequestParam(value = "userid") String userId,
 			@RequestParam(value = "activityid") String activityId, @RequestParam(value = "flag") String falg,
 			@RequestParam(value = "persioncount") String persionCount,
-			@RequestParam(value = "note",required=false) String note,
-			HttpServletRequest request, HttpServletResponse response) {
+			@RequestParam(value = "note", required = false) String note, HttpServletRequest request,
+			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("flag", 0);
 		if (apiOauth(request, response)) {
-			int flag=userService.signUpActivity(userId, activityId, Boolean.parseBoolean(falg),Integer.parseInt(persionCount),note);
+			int flag = userService.signUpActivity(userId, activityId, Boolean.parseBoolean(falg),
+					Integer.parseInt(persionCount), note);
 			result.put("flag", flag);
 		}
 		return result;
@@ -525,94 +526,95 @@ public class ApiController {
 				JSONObject json = JSONObject.fromObject(inData);
 				String activityId = json.getString("activityid");
 				String userId = json.getString("userid");
-				
-				//获取活动信息
-				Map<String, Object> activityInfo=activityService.getActivityInfo(activityId);
-				//计算打卡位置是否在允许打卡范围内
-				double distanceCoumpter=GeoHash.getDistance(Double.parseDouble(activityInfo.get("activity_location_latitude").toString()),Double.parseDouble(activityInfo.get("activity_location_longitude").toString()),json.getDouble("latitude"),json.getDouble("longitude"));
-				
-				if(distanceCoumpter<=Double.parseDouble(distance)) {
-					//打卡
+
+				// 获取活动信息
+				Map<String, Object> activityInfo = activityService.getActivityInfo(activityId);
+				// 计算打卡位置是否在允许打卡范围内
+				double distanceCoumpter = GeoHash.getDistance(
+						Double.parseDouble(activityInfo.get("activity_location_latitude").toString()),
+						Double.parseDouble(activityInfo.get("activity_location_longitude").toString()),
+						json.getDouble("latitude"), json.getDouble("longitude"));
+
+				if (distanceCoumpter <= Double.parseDouble(distance)) {
+					// 打卡
 					userService.signInActivity(userId, activityId);
 					result.put("flag", 1);
-				}else {
+				} else {
 					result.put("flag", 2);
 				}
-				
+
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 		return result;
 	}
-	
-	@GetMapping(value="user/organization")
+
+	@GetMapping(value = "user/organization")
 	public List<Map<String, Object>> organizationActivity(@RequestParam(value = "userid") String userId,
-			HttpServletRequest request, HttpServletResponse response){
+			HttpServletRequest request, HttpServletResponse response) {
 		if (apiOauth(request, response)) {
 			try {
-				
-			return	userService.organizationActivity(userId);
-				
-				
+
+				return userService.organizationActivity(userId);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 		return null;
 	}
-	
-	@GetMapping(value="user/participate")
+
+	@GetMapping(value = "user/participate")
 	public List<Map<String, Object>> participateActivity(@RequestParam(value = "userid") String userId,
-			HttpServletRequest request, HttpServletResponse response){
+			HttpServletRequest request, HttpServletResponse response) {
 		if (apiOauth(request, response)) {
 			try {
-				
-			return	userService.participateActivity(userId);
-				
-				
+
+				return userService.participateActivity(userId);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 		return null;
 	}
-	@GetMapping(value="user/attention")
+
+	@GetMapping(value = "user/attention")
 	public List<Map<String, Object>> attentionActivity(@RequestParam(value = "userid") String userId,
-			HttpServletRequest request, HttpServletResponse response){
+			HttpServletRequest request, HttpServletResponse response) {
 		if (apiOauth(request, response)) {
 			try {
-				
-			return	userService.attentionActivity(userId);
-				
-				
+
+				return userService.attentionActivity(userId);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 		return null;
 	}
-	
-	@PostMapping(value="user/comment")
+
+	@PostMapping(value = "user/comment")
 	public Map<String, Object> commentActivity(@RequestParam(value = "comment") String comment,
-			HttpServletRequest request, HttpServletResponse response){
+			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (apiOauth(request, response)) {
 			try {
-				String	inData = URLDecoder.decode(URLDecoder.decode(comment, "UTF-8"), "UTF-8");
+				String inData = URLDecoder.decode(URLDecoder.decode(comment, "UTF-8"), "UTF-8");
 				JSONObject json = JSONObject.fromObject(inData);
 				String activityId = json.getString("activityid");
 				String userId = json.getString("userid");
-				JSONArray jarray=json.getJSONArray("pic");
+				JSONArray jarray = json.getJSONArray("pic");
 				List<Map<String, Object>> fileNameList = new ArrayList<Map<String, Object>>();
-				for(int i =0;i<jarray.size();i++) {
-					Map<String, Object> picMap=new HashMap<String,Object>();
-					JSONObject jObject=jarray.getJSONObject(i);
+				for (int i = 0; i < jarray.size(); i++) {
+					Map<String, Object> picMap = new HashMap<String, Object>();
+					JSONObject jObject = jarray.getJSONObject(i);
 
 					picMap.put("pic_id", RSAUtils.md5(jObject.getString("newname")));
 					picMap.put("pic_name", jObject.getString("newname"));
@@ -623,24 +625,32 @@ public class ApiController {
 				}
 				result.put("fileList", fileNameList);
 				result.put("commentObject", activityId);
-				result.put("comment", comment);
+				result.put("comment", json.getString("comment"));
 				result.put("userId", userId);
-				
-				//添加评论
+
+				// 添加评论
 				userService.commentActivity(result);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
-			
+
 		} else
 
 		{
 			result.put("flag", -2);
 		}
-		
+
 		return result;
+	}
+
+	@GetMapping(value = "activity/comment")
+	public List<Map<String, Object>> comments(@RequestParam(value = "activityid") String activityId,
+			@RequestParam(value = "currentpage") String currentPage, @RequestParam(value = "pagesize") String pageSize,
+			HttpServletRequest request, HttpServletResponse response) {
+		if (apiOauth(request, response)) {
+
+		}
+		return null;
 	}
 }
