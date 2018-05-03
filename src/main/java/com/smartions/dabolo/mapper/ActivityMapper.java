@@ -39,7 +39,7 @@ public interface ActivityMapper {
 	int removeLabel(List<Map<String, Object>> activityAndLabel,@Param("activityId")String activityId);
 	
 	List<Map<String, Object>> getParticipateList(@Param("activityId")String activityId);
-	int getCountComment(@Param("activityId")String activityId);
+	Map<String, Object> getCountComment(@Param("activityId")String activityId);
 	List<Map<String, Object>> getCommentList(@Param("activityId")String activityId,@Param("start")int start,@Param("pageSize")int pageSize);
 	List<Map<String, Object>> getCommentPicList(List<String> commentIds);
 

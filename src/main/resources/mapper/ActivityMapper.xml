@@ -173,7 +173,7 @@
 	 select * from ActivityAndUser where activity_and_user_activity_id=#{activityId} and activity_and_user_participate=1;
 	</select>
 	<select id="getCountComment">
-	select count(*) from Comment where comment_object=#{activityId}
+	select count(*) as count from Comment where comment_object=#{activityId}
 	</select>
 	<select id="getCommentList" resultType="hashMap">
 	select * from Comment where comment_object=#{activityId} limit #{start},#{pageSize}
