@@ -223,9 +223,9 @@ public class ActivityService implements IActivityService {
 	public Map<String, Object> getComments(String activityId,int currentPage,int pageSize) {
 		Map<String, Object> inDataMap = new HashMap<String, Object>();
 		//获取评论条数
-		Map<String, Object> countMap=activityMapper.getCountComment(activityId);
+		Integer countMap=activityMapper.getCountComment(activityId);
 		if(countMap!=null)return inDataMap;
-		int count=Integer.parseInt(countMap.get("count").toString());
+		int count=countMap.intValue();
 		int pageCount=(count+pageSize-1)/pageSize;
 		inDataMap.put("count", count);
 		inDataMap.put("pageCount", pageCount);
