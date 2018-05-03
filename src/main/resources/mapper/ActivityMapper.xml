@@ -74,7 +74,7 @@
 			pic_name ,
 			pic_creator ,
 			pic_activity_id ,
-			pic_face ) values
+			pic_face,pic_type ) values
 			<foreach collection="list" item="item" open="" separator=","
 			close="">
 			(
@@ -82,7 +82,7 @@
 			#{item.pic_name} ,
 			#{item.pic_creator} ,
 			#{item.pic_activity_id} ,
-			#{item.pic_face} )
+			#{item.pic_face},#{item.pic_type} )
 		</foreach>
 
 	</insert>
@@ -171,5 +171,19 @@
 	</delete>
 	<select id="getParticipateList" resultType="hashMap">
 	 select * from ActivityAndUser where activity_and_user_activity_id=#{activityId} and activity_and_user_participate=1;
+	</select>
+	<select id="getCountComment">
+	select count(*) from Comment where comment_object=#{activityId}
+	</select>
+	<select id="getCommentList" resultType="hashMap">
+	select * from Comment where comment_object=#{activityId} limit #{start},#{pageSize}
+	</select>
+	<select id="getCommentPicList" resultType="hashMap">
+	select * from CommentAndPic inner join Picture on CommentAndPic.comment_and_pic_pic_id=Picture.pic_id where comment_and_pic_comment_id in (
+		<foreach collection="list" item="commentId" open=""
+			separator="," close="">
+			#{commentId}
+		</foreach>
+	)
 	</select>
 </mapper>  

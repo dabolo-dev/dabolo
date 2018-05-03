@@ -292,7 +292,7 @@ public class ApiController {
 					map.put("pic_creator", json.get("userid"));
 					map.put("pic_activity_id", activityId);
 					map.put("pic_face", jObject.getBoolean("iscover"));
-
+					map.put("pic_type", "activity");
 					pics.add(map);
 				}
 				inDataMap.put("picList", pics);
@@ -621,6 +621,7 @@ public class ApiController {
 					picMap.put("pic_creator", json.getString("userid"));
 					picMap.put("pic_activity_id", activityId);
 					picMap.put("pic_face", jObject.getBoolean("iscover"));
+					picMap.put("pic_type", "comment");
 					fileNameList.add(picMap);
 				}
 				result.put("fileList", fileNameList);
@@ -645,11 +646,11 @@ public class ApiController {
 	}
 
 	@GetMapping(value = "activity/comment")
-	public List<Map<String, Object>> comments(@RequestParam(value = "activityid") String activityId,
-			@RequestParam(value = "currentpage") String currentPage, @RequestParam(value = "pagesize") String pageSize,
+	public Map<String, Object> comments(@RequestParam(value = "activityid") String activityId,
+			@RequestParam(value = "currentpage") int currentPage, @RequestParam(value = "pagesize") int pageSize,
 			HttpServletRequest request, HttpServletResponse response) {
 		if (apiOauth(request, response)) {
-
+			return activityService.getComments(activityId, currentPage, pageSize);
 		}
 		return null;
 	}

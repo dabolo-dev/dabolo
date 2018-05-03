@@ -219,4 +219,37 @@ public class ActivityService implements IActivityService {
 		}
 	}
 
+	@Override
+	public Map<String, Object> getComments(String activityId,int currentPage,int pageSize) {
+		Map<String, Object> inDataMap = new HashMap<String, Object>();
+		//获取评论条数
+		int count=activityMapper.getCountComment(activityId);
+		int pageCount=(count+pageSize-1)/pageSize;
+		inDataMap.put("count", count);
+		inDataMap.put("pageCount", pageCount);
+		//获取评论
+		int start=(currentPage-1)*pageSize;
+		List<Map<String, Object>> commentList=activityMapper.getCommentList(activityId, start, pageSize);
+		inDataMap.put("commentList", commentList);
+		//获取图片
+		List<String> commentIds=new ArrayList<String>();
+		for(Map<String, Object> comment:commentList) {
+			commentIds.add(comment.get("comment_id").toString());
+		}
+		if(commentIds.size()>0) {
+			List<Map<String, Object>> picList=activityMapper.getCommentPicList(commentIds);
+			for(Map<String, Object> comment:commentList) {
+				List<Map<String, Object>> commentPicList=new ArrayList<Map<String, Object>>();
+				comment.put("picList", commentPicList);
+				for(Map<String, Object> pic:picList) {
+					if(comment.get("comment_id").equals(pic.get("comment_and_pic_comment_id"))) {
+						commentPicList.add(pic);
+					}
+				}
+			}
+		}
+		
+				return inDataMap;
+	}
+
 }

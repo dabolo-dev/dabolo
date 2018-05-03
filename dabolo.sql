@@ -137,8 +137,9 @@ CREATE TABLE `Picture` (
   `pic_id` char(32) NOT NULL,
   `pic_name` varchar(255) NOT NULL,
   `pic_creator` char(32) NOT NULL,
-  `pic_activity_id` char(32) NOT NULL default '-1',
-  `pic_face` bit(1) NOT NULL DEFAULT b'0'
+  `pic_activity_id` char(32) NOT NULL DEFAULT '-1',
+  `pic_face` bit(1) NOT NULL DEFAULT b'0',
+  `pic_type` enum('activity','comment') NOT NULL DEFAULT 'activity'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
