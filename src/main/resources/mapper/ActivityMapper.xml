@@ -176,7 +176,7 @@
 	select count(*) as count from Comment where comment_object=#{activityId}
 	</select>
 	<select id="getCommentList" resultType="hashMap">
-	select * from Comment where comment_object=#{activityId} limit #{start},#{pageSize}
+	select * from Comment,Third where comment_object=#{activityId} and Comment.comment_creator=Third.user_id and third_type=#{third_type} limit #{start},#{pageSize}
 	</select>
 	<select id="getCommentPicList" resultType="hashMap">
 	select * from CommentAndPic inner join Picture on CommentAndPic.comment_and_pic_pic_id=Picture.pic_id where comment_and_pic_comment_id in (

@@ -231,7 +231,7 @@ public class ActivityService implements IActivityService {
 		inDataMap.put("pageCount", pageCount);
 		//获取评论
 		int start=(currentPage-1)*pageSize;
-		List<Map<String, Object>> commentList=activityMapper.getCommentList(activityId, start, pageSize);
+		List<Map<String, Object>> commentList=activityMapper.getCommentList(activityId, start, pageSize,"wechat");
 		inDataMap.put("commentList", commentList);
 		//获取图片
 		List<String> commentIds=new ArrayList<String>();

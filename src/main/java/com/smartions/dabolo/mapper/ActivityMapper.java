@@ -40,7 +40,7 @@ public interface ActivityMapper {
 	
 	List<Map<String, Object>> getParticipateList(@Param("activityId")String activityId);
 	Integer getCountComment(@Param("activityId")String activityId);
-	List<Map<String, Object>> getCommentList(@Param("activityId")String activityId,@Param("start")int start,@Param("pageSize")int pageSize);
+	List<Map<String, Object>> getCommentList(@Param("activityId")String activityId,@Param("start")int start,@Param("pageSize")int pageSize,@Param("third_type")String thirdType);
 	List<Map<String, Object>> getCommentPicList(List<String> commentIds);
 
 
