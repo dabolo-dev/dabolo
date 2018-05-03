@@ -143,7 +143,7 @@ public class UserService implements IUserService {
 		}
 		//更新头像
 		
-		HttpURLConnectionUtil.saveData(HttpURLConnectionUtil.getInputStreamByGet(avarUrl), new File(filePath,openId+".png"));
+		HttpURLConnectionUtil.saveData(HttpURLConnectionUtil.getInputStreamByGet(avarUrl), new File(filePath,userId+"_wechat"+".png"));
 		// 通过用户id和unionId登录
 
 		return signIn(userId, unionId,response);
