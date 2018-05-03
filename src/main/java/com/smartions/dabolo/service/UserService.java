@@ -380,6 +380,7 @@ public class UserService implements IUserService {
 					map.put("pic_creator", fileName.get("pic_creator"));
 					map.put("pic_activity_id", result.get("commentObject"));
 					map.put("pic_face", false);
+					map.put("pic_type", "comment");
 					mapCommentAndPic.put("comment_and_pic_pic_id", map.get("pic_id"));
 					mapCommentAndPic.put("comment_and_pic_comment_id", commentId);
 					pics.add(map);
