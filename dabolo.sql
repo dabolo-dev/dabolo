@@ -154,6 +154,7 @@ CREATE TABLE `Third` (
   `third_type` enum('wechat') NOT NULL COMMENT '平台类型',
   `third_id` varchar(255) NOT NULL COMMENT '平台用户id',
   `user_id` char(32) NOT NULL COMMENT '用户id',
+  `nick_name` varchar(255) NOT NULL,
   PRIMARY KEY (`third_type`,`third_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
