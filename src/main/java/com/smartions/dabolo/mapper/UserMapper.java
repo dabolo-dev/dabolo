@@ -21,5 +21,6 @@ public interface UserMapper {
 	public List<Map<String,Object>> attentionActivity(Map<String,Object>  userAndActivity);
 	public int saveComment(Map<String,Object> comment);
 	public int saveCommentAndPic(List<Map<String,Object>> comments);
+	public int updateNickName(Map<String,Object> user);
 	
 }

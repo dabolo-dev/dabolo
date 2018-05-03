@@ -1,5 +1,6 @@
 package com.smartions.dabolo.service;
 
+import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +19,8 @@ import com.smartions.dabolo.mapper.UserMapper;
 import com.smartions.dabolo.model.Third;
 import com.smartions.dabolo.model.User;
 import com.smartions.dabolo.utils.AES;
+import com.smartions.dabolo.utils.HttpURLConnectionUtil;
 import com.smartions.dabolo.utils.RSAUtils;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 @Service
 public class UserService implements IUserService {
@@ -32,6 +32,9 @@ public class UserService implements IUserService {
 
 	@Autowired
 	ITokenService tokenService;
+	
+	@Value("${upload.path}")
+	private String filePath;
 
 	@Override
 	@Transactional
@@ -115,7 +118,7 @@ public class UserService implements IUserService {
 
 	@Override
 	@Transactional
-	public Map<String, Object> wechatConnect(String openId, String unionId,HttpServletResponse response) {
+	public Map<String, Object> wechatConnect(String openId, String unionId,String nickName,String avarUrl,HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		// 通过openid去查询是否用户存在
 		String userId = userMapper.getUserIdByWechatOpenId(openId);
@@ -127,8 +130,20 @@ public class UserService implements IUserService {
 			third.put(Third.USER_ID, userId);
 			third.put(Third.THIRD_ID, openId);
 			third.put(Third.THIRD_TYPE, "wechat");
+			third.put(Third.NICK_NAME, nickName);
 			userMapper.bindThirdAndUser(third);
+		}else {
+			//更新昵称
+			Map<String, Object> third = new HashMap<String, Object>();
+			third.put(Third.USER_ID, userId);
+			third.put(Third.THIRD_ID, openId);
+			third.put(Third.THIRD_TYPE, "wechat");
+			third.put(Third.NICK_NAME, nickName);
+			userMapper.updateNickName(third);
 		}
+		//更新头像
+		
+		HttpURLConnectionUtil.saveData(HttpURLConnectionUtil.getInputStreamByGet(avarUrl), new File(filePath,openId+".png"));
 		// 通过用户id和unionId登录
 
 		return signIn(userId, unionId,response);
