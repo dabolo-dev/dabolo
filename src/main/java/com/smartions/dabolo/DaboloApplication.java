@@ -10,16 +10,18 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 
 import com.smartions.dabolo.model.UploadFile;
+import com.smartions.dabolo.service.IActivityService;
 
 @SpringBootApplication
 @MapperScan(basePackages = "com.smartions.dabolo.mapper")
 public class DaboloApplication {
 	@Autowired
 	private UploadFile uploadFile;
-
+	
+	
 	@Bean
 	public MultipartConfigElement multipartConfigElement() {
-
+		
 		MultipartConfigFactory factory = new MultipartConfigFactory();
 
 		//// 设置文件大小限制 ,超了，页面会抛出异常信息，这时候就需要进行异常信息的处理了;
@@ -39,6 +41,7 @@ public class DaboloApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DaboloApplication.class, args);
+		
 	}
 
 }

@@ -41,6 +41,7 @@ import net.sf.json.JSONObject;
 
 @RestController
 public class ApiController {
+	private static boolean isNoFirst;
 	@Autowired
 	IUserService userService;
 
@@ -111,6 +112,10 @@ public class ApiController {
 			HttpServletResponse response) {
 
 		try {
+			if(!isNoFirst) {
+				activityService.notifyPlanMessage();
+				isNoFirst=true;
+			}
 			return userService.wechatConnect(openId, RSAUtils.md5(openId), nickName, avatarUrl, response);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
