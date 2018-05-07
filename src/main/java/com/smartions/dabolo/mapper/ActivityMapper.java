@@ -42,6 +42,8 @@ public interface ActivityMapper {
 	Integer getCountComment(@Param("activityId")String activityId);
 	List<Map<String, Object>> getCommentList(@Param("activityId")String activityId,@Param("start")int start,@Param("pageSize")int pageSize,@Param("third_type")String thirdType);
 	List<Map<String, Object>> getCommentPicList(List<String> commentIds);
+	List<Map<String, Object>> getToBeStart();
+	List<Map<String, Object>> getOpenIdsByUserIdS(List<String> userIds);
 
 
 }

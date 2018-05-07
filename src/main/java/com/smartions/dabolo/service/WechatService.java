@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.smartions.dabolo.model.Wechat;
+import com.smartions.dabolo.model.WechatMessage;
 import com.smartions.dabolo.utils.HttpsUtils;
 
 import net.sf.json.JSONObject;
@@ -12,11 +13,29 @@ import net.sf.json.JSONObject;
 public class WechatService implements IWechatService {
 	@Autowired
 	private Wechat wechat;
-	private String url="https://api.weixin.qq.com/sns/jscode2session?";
+	private String url = "https://api.weixin.qq.com/sns/jscode2session?";
+	private String access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&";
+	private String send_message = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=";
+
 	@Override
 	public JSONObject getSessionKey(String code) {
-		JSONObject jsonObject= HttpsUtils.sendHtpps("appid="+wechat.getAppId()+"&secret="+wechat.getSecret()+"&js_code="+code+"&grant_type=authorization_code", url);
+		JSONObject jsonObject = HttpsUtils.sendHtpps("appid=" + wechat.getAppId() + "&secret=" + wechat.getSecret()
+				+ "&js_code=" + code + "&grant_type=authorization_code", url);
 		return jsonObject;
+	}
+
+	@Override
+	public boolean sendMessage(WechatMessage message) {
+		JSONObject jsonObject = HttpsUtils.sendHtpps("appid=" + wechat.getAppId() + "&secret=" + wechat.getSecret(),
+				access_token);
+		if (jsonObject.containsKey("access_token")) {
+			String token = jsonObject.getString("access_token");
+			JSONObject jsonReturnObject = HttpsUtils.sendHtpps(token + "touser=" + message.getTouser() + "&template_id="
+					+ message.getTemplateId() + "&data=" + message.getData() + "&form_id=" + message.getFormId(),
+					send_message);
+			return jsonReturnObject.containsKey("errmsg") && "".equals(jsonReturnObject.getString("errmsg"));
+		}
+		return false;
 	}
 
 }

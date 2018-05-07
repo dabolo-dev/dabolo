@@ -14,6 +14,8 @@ public interface IActivityService {
 	 int setCover(String picName,String activityId);
 	 Map<String,Object> saveActivity(Map<String,Object> activityMap);
 	 Map<String,Object> getComments(String activityId,int currentPage,int pageSize);
+	 void notifyPlanMessage();
+	 void sendMessage(String activityId);
 	 
 
 }

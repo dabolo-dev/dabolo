@@ -106,10 +106,12 @@ public class ApiController {
 
 	@GetMapping(value = "/wechat/connect")
 	public Map<String, Object> wechcatConnect(@RequestParam(value = "openid") String openId,
-			@RequestParam(value = "unionid", required = false) String unionId,@RequestParam(value = "nickname")String nickName,@RequestParam(value = "avatarurl")String avatarUrl, HttpServletResponse response) {
+			@RequestParam(value = "unionid", required = false) String unionId,
+			@RequestParam(value = "nickname") String nickName, @RequestParam(value = "avatarurl") String avatarUrl,
+			HttpServletResponse response) {
 
 		try {
-			return userService.wechatConnect(openId, RSAUtils.md5(openId),nickName,avatarUrl, response);
+			return userService.wechatConnect(openId, RSAUtils.md5(openId), nickName, avatarUrl, response);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -488,6 +490,13 @@ public class ApiController {
 					}
 				}
 				activityService.saveActivity(inDataMap);
+				if (inDataMap.containsKey("limit") || inDataMap.containsKey("starttime") || inDataMap.containsKey("address")
+						|| (inDataMap.containsKey("status")&&"cancel".equals(json.getString("status")))) {
+					activityService.sendMessage(activityId);
+					if(inDataMap.containsKey("starttime")) {
+						activityService.notifyPlanMessage();
+					}
+				}
 				result.put("flag", 1);
 
 			} catch (Exception e) {

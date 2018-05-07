@@ -7,18 +7,35 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.smartions.dabolo.mapper.ActivityMapper;
 import com.smartions.dabolo.model.Activity;
+import com.smartions.dabolo.model.WechatMessage;
 
 @Service
 public class ActivityService implements IActivityService {
 	@Autowired
 	private ActivityMapper activityMapper;
+
+	@Autowired
+	IWechatService wechatService;
+
+	@Value("activity.notify")
+	private String notify;
+
+	@Value("wechat.message.templeate-id")
+	private String templeateId;
+
+	@Value("wechat.message.data")
+	private String data;
+	private Timer timer = new Timer();
 
 	public static final long dateToStamp(String dateStr) throws ParseException {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -220,38 +237,116 @@ public class ActivityService implements IActivityService {
 	}
 
 	@Override
-	public Map<String, Object> getComments(String activityId,int currentPage,int pageSize) {
+	public Map<String, Object> getComments(String activityId, int currentPage, int pageSize) {
 		Map<String, Object> inDataMap = new HashMap<String, Object>();
-		//获取评论条数
-		Integer countMap=activityMapper.getCountComment(activityId);
-		if(countMap==null)return inDataMap;
-		int count=countMap.intValue();
-		int pageCount=(count+pageSize-1)/pageSize;
+		// 获取评论条数
+		Integer countMap = activityMapper.getCountComment(activityId);
+		if (countMap == null)
+			return inDataMap;
+		int count = countMap.intValue();
+		int pageCount = (count + pageSize - 1) / pageSize;
 		inDataMap.put("count", count);
 		inDataMap.put("pageCount", pageCount);
-		//获取评论
-		int start=(currentPage-1)*pageSize;
-		List<Map<String, Object>> commentList=activityMapper.getCommentList(activityId, start, pageSize,"wechat");
+		// 获取评论
+		int start = (currentPage - 1) * pageSize;
+		List<Map<String, Object>> commentList = activityMapper.getCommentList(activityId, start, pageSize, "wechat");
 		inDataMap.put("commentList", commentList);
-		//获取图片
-		List<String> commentIds=new ArrayList<String>();
-		for(Map<String, Object> comment:commentList) {
+		// 获取图片
+		List<String> commentIds = new ArrayList<String>();
+		for (Map<String, Object> comment : commentList) {
 			commentIds.add(comment.get("comment_id").toString());
 		}
-		if(commentIds.size()>0) {
-			List<Map<String, Object>> picList=activityMapper.getCommentPicList(commentIds);
-			for(Map<String, Object> comment:commentList) {
-				List<Map<String, Object>> commentPicList=new ArrayList<Map<String, Object>>();
+		if (commentIds.size() > 0) {
+			List<Map<String, Object>> picList = activityMapper.getCommentPicList(commentIds);
+			for (Map<String, Object> comment : commentList) {
+				List<Map<String, Object>> commentPicList = new ArrayList<Map<String, Object>>();
 				comment.put("picList", commentPicList);
-				for(Map<String, Object> pic:picList) {
-					if(comment.get("comment_id").equals(pic.get("comment_and_pic_comment_id"))) {
+				for (Map<String, Object> pic : picList) {
+					if (comment.get("comment_id").equals(pic.get("comment_and_pic_comment_id"))) {
 						commentPicList.add(pic);
 					}
 				}
 			}
 		}
+
+		return inDataMap;
+	}
+
+	@Override
+	public void notifyPlanMessage() {
+		timer.cancel();
+		List<Map<String, Object>> toBeStartList = activityMapper.getToBeStart();
+
+		long now = System.currentTimeMillis();
+		for (Map<String, Object> activity : toBeStartList) {
+			try {
+				List<Map<String, Object>> participateList = activityMapper
+						.getParticipateList(activity.get("activity_id").toString());
+				List<String> userIdList = new ArrayList<String>();
+				userIdList.add(activity.get("activity_creator").toString());
+				for (Map<String, Object> participate : participateList) {
+					userIdList.add(participate.get("activity_and_user_user_id").toString());
+				}
+				final List<Map<String, Object>> userInfoList = activityMapper.getOpenIdsByUserIdS(userIdList);
+				long startTime = dateToStamp(activity.get("activity_start").toString()) - Long.parseLong(notify);
+
+				long delayTime = startTime - now;
+				if (delayTime > 0) {
+					timer.schedule(new TimerTask() {
+						public void run() {
+							// 获取活动所有参与者的openid
+							for (Map<String, Object> userInfo : userInfoList) {
+								// 发送信息
+								WechatMessage wm = new WechatMessage();
+								wm.setTouser(userInfo.get("third_id").toString());
+								wm.setData(data);
+								wm.setFormId(userInfo.get("user_id").toString());
+								wm.setTemplateId(templeateId);
+								wechatService.sendMessage(wm);
+							}
+
+						}
+					}, delayTime);
+				}
+
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	@Override
+	public void sendMessage(String activityId) {
+
+		List<Map<String, Object>> participateList = activityMapper.getParticipateList(activityId);
+		final List<String> userIdList = new ArrayList<String>();
+		for (Map<String, Object> participate : participateList) {
+			userIdList.add(participate.get("activity_and_user_user_id").toString());
+		}
+		if(userIdList.size()>0) {
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					List<Map<String, Object>> userInfoList = activityMapper.getOpenIdsByUserIdS(userIdList);
+					// 获取活动所有参与者的openid
+					for (Map<String, Object> userInfo : userInfoList) {
+						// 发送信息
+						WechatMessage wm = new WechatMessage();
+						wm.setTouser(userInfo.get("third_id").toString());
+						wm.setData(data);
+						wm.setFormId(userInfo.get("user_id").toString());
+						wm.setTemplateId(templeateId);
+						wechatService.sendMessage(wm);
+					}
+					
+				}
+			}).start();
+		}
 		
-				return inDataMap;
+
 	}
 
 }
