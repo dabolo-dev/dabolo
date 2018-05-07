@@ -36,9 +36,6 @@ public class ActivityService implements IActivityService {
 	@Value("wechat.message.data")
 	private String data;
 	private Timer timer = new Timer();
-	public ActivityService(){
-		notifyPlanMessage();
-	}
 
 	public static final long dateToStamp(String dateStr) throws ParseException {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
