@@ -138,6 +138,7 @@
 	<update id="editActivity">
 		update Activity 
 		<set>
+		<if test="activity_title != null">activity_title=#{activity_title},</if>
 		<if test="activity_status != null">activity_status=#{activity_status},</if>
 		<if test="activity_desc != null">activity_desc=#{activity_desc},</if>
 		<if test="activity_sign_up_start != null">activity_sign_up_start=#{activity_sign_up_start} ,</if>
