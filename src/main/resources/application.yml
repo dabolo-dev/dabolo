@@ -18,11 +18,16 @@ mybatis:
 wechat:
   appid: 
   secret: 
+  message: 
+    templeate-id: cg4ZoEJPM4eYw1aBIW83IAzL41q6uA2NEJpEJHLLI2I
+    data: 测试内容
+  
 token: 
   secret: 123456
   timeout: 1800
 activity: 
   distance: 2000
+  notify: 3600
 
   
  
