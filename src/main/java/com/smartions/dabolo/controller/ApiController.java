@@ -57,7 +57,7 @@ public class ApiController {
 	@Value("${upload.path}")
 	private String filePath;
 
-	@Value("activity.distance")
+	@Value("${activity.distance}")
 	private String distance;
 
 	public boolean apiOauth(HttpServletRequest request, HttpServletResponse response) {

@@ -27,13 +27,13 @@ public class ActivityService implements IActivityService {
 	@Autowired
 	IWechatService wechatService;
 
-	@Value("activity.notify")
+	@Value("${activity.notify}")
 	private String notify;
 
-	@Value("wechat.message.templeate-id")
+	@Value("${wechat.message.templeate-id}")
 	private String templeateId;
 
-	@Value("wechat.message.data")
+	@Value("${wechat.message.data}")
 	private String data;
 	private Timer timer = new Timer();
 
