@@ -248,7 +248,7 @@ public class ApiController {
 	public Map<String, Object> createActivity(@RequestParam(value = "activity") String activity,
 			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
-
+		result.put("flag", 0);
 		try {
 			String inData = URLDecoder.decode(URLDecoder.decode(activity, "UTF-8"), "UTF-8");
 			System.out.println("indata:" + inData);
@@ -316,7 +316,10 @@ public class ApiController {
 						activityService.createActivity(String.valueOf(json.get("userid")), inDataMap).get("flag"));
 				System.out.println(flag + ":flag");
 				if ("1".equals(flag)) {
-					return activityService.getActivityInfo(activityId);
+//					return activityService.getActivityInfo(activityId);
+					result.put("flag", 1);
+				}else {
+					result.put("flag", 0);
 				}
 			} else {
 
@@ -400,17 +403,17 @@ public class ApiController {
 					inDataMap.put(Activity.START, json.getString("starttime"));
 
 				if (json.containsKey("address"))
-					inDataMap.put(Activity.LOCATION, json.getJSONObject("address").getString("addstr"));
+					inDataMap.put(Activity.LOCATION, json.getString("address"));
 
-				if (json.containsKey("address"))
-					inDataMap.put(Activity.LOCATION_latitude, json.getJSONObject("address").getDouble("latitude"));
+				if (json.containsKey("latitude"))
+					inDataMap.put(Activity.LOCATION_latitude, json.getDouble("latitude"));
 
-				if (json.containsKey("address"))
-					inDataMap.put(Activity.LOCATION_longitude, json.getJSONObject("address").getDouble("longitude"));
+				if (json.containsKey("longitude"))
+					inDataMap.put(Activity.LOCATION_longitude, json.getDouble("longitude"));
 
 				if (json.containsKey("address")) {
-					GeoHash ghash = new GeoHash(json.getJSONObject("address").getDouble("latitude"),
-							json.getJSONObject("address").getDouble("longitude"));
+					GeoHash ghash = new GeoHash(json.getDouble("latitude"),
+							json.getDouble("longitude"));
 					inDataMap.put(Activity.LOCATION_GEOHASH, ghash.getGeoHashBase32());
 				}
 				// 标签
