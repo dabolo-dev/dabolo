@@ -106,4 +106,53 @@ public class HttpsUtils {
         }
         return JSONObject.fromObject(result);
     }
+    public static JSONObject sendHtppsForGet(String a,String url) {
+        String result = "";
+//        PrintWriter out = null;
+        BufferedReader in = null;
+        HttpURLConnection conn;
+        try {
+            trustAllHosts();
+            String urlNameString = url + a;
+            URL realUrl = new URL(urlNameString);
+            //通过请求地址判断请求类型(http或者是https)
+            if (realUrl.getProtocol().toLowerCase().equals("https")) {
+                HttpsURLConnection https = (HttpsURLConnection) realUrl.openConnection();
+                https.setHostnameVerifier(DO_NOT_VERIFY);
+                conn = https;
+            } else {
+                conn = (HttpURLConnection) realUrl.openConnection();
+            }
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent",
+                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            conn.setRequestProperty("Content-Type", "text/plain;charset=utf-8");
+
+            // 获取URLConnection对象对应的输出流
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()));
+           
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {// 使用finally块来关闭输出流、输入流
+            try {
+//                if (out != null) {
+//                    out.close();
+//                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return JSONObject.fromObject(result);
+    }
 }
