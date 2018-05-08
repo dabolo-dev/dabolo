@@ -1,10 +1,12 @@
 package com.smartions.dabolo.model;
 
+import java.util.Map;
+
 public class WechatMessage {
 	private String touser;
 	private String templateId;
 	private String formId;
-	private String data;
+	private Map<String,Object> data;
 
 	public String getTouser() {
 		return touser;
@@ -30,11 +32,11 @@ public class WechatMessage {
 		this.formId = formId;
 	}
 
-	public String getData() {
+	public Map<String,Object> getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(Map<String,Object> data) {
 		this.data = data;
 	}
 }

@@ -15,7 +15,7 @@ public interface IActivityService {
 	 Map<String,Object> saveActivity(Map<String,Object> activityMap);
 	 Map<String,Object> getComments(String activityId,int currentPage,int pageSize);
 	 void notifyPlanMessage();
-	 void sendMessage(String activityId);
+	 void sendMessage(String activityId,String updateMessage);
 	 
 
 }

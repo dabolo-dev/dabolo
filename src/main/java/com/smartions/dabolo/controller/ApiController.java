@@ -500,7 +500,17 @@ public class ApiController {
 				activityService.saveActivity(inDataMap);
 				if (inDataMap.containsKey(Activity.ALLOW_PERSION) || inDataMap.containsKey(Activity.START) || inDataMap.containsKey(Activity.LOCATION)
 						|| (inDataMap.containsKey(Activity.STATUS)&&"cancel".equals(json.getString("status")))) {
-					activityService.sendMessage(activityId);
+					StringBuilder updateMessage=new StringBuilder();
+					if(inDataMap.containsKey(Activity.ALLOW_PERSION)) {
+						updateMessage.append("限制人数更新为").append(inDataMap.get(Activity.ALLOW_PERSION));
+					}
+					if(inDataMap.containsKey(Activity.START)) {
+						updateMessage.append("开始时间新为").append(inDataMap.get(Activity.START));			
+										}
+					if(inDataMap.containsKey(Activity.STATUS)) {
+						updateMessage.append("状态更新为").append(inDataMap.get(Activity.STATUS));
+					}
+					activityService.sendMessage(activityId,updateMessage.toString());
 					if(inDataMap.containsKey("starttime")) {
 						activityService.notifyPlanMessage();
 					}

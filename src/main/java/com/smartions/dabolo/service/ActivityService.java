@@ -30,11 +30,13 @@ public class ActivityService implements IActivityService {
 	@Value("${activity.notify}")
 	private String notify;
 
-	@Value("${wechat.message.templeate-id}")
-	private String templeateId;
-
+	@Value("${wechat.message.templeate-update-id}")
+	private String templeateUpdateId;
+	@Value("${wechat.message.templeate-notify-id}")
+	private String templeateNotifyId;
 	@Value("${wechat.message.data}")
-	private String data;
+	private String message;
+
 	private Timer timer =null;
 
 	public static final long dateToStamp(String dateStr) throws ParseException {
@@ -303,9 +305,15 @@ public class ActivityService implements IActivityService {
 								// 发送信息
 								WechatMessage wm = new WechatMessage();
 								wm.setTouser(userInfo.get("third_id").toString());
+								Map<String,Object> data=new HashMap<String,Object>();
+								data.put("keyword1", activity.get("activity_title"));
+								data.put("keyword2", activity.get("activity_start"));
+								data.put("keyword3", activity.get("activity_location"));
+								data.put("keyword4", activity.get("activity_desc"));
+								data.put("keyword5", message);
 								wm.setData(data);
 								wm.setFormId(userInfo.get("user_id").toString());
-								wm.setTemplateId(templeateId);
+								wm.setTemplateId(templeateNotifyId);
 								wechatService.sendMessage(wm);
 							}
 
@@ -322,9 +330,10 @@ public class ActivityService implements IActivityService {
 	}
 
 	@Override
-	public void sendMessage(String activityId) {
+	public void sendMessage(String activityId,String updateMessage) {
 
 		List<Map<String, Object>> participateList = activityMapper.getParticipateList(activityId);
+		Map<String, Object> activity =activityMapper.getActivityInfo(activityId);
 		final List<String> userIdList = new ArrayList<String>();
 		for (Map<String, Object> participate : participateList) {
 			userIdList.add(participate.get("activity_and_user_user_id").toString());
@@ -340,9 +349,14 @@ public class ActivityService implements IActivityService {
 						// 发送信息
 						WechatMessage wm = new WechatMessage();
 						wm.setTouser(userInfo.get("third_id").toString());
+						Map<String,Object> data=new HashMap<String,Object>();
+						data.put("keyword1", activity.get("activity_title"));
+						data.put("keyword2", activity.get("activity_location"));
+						data.put("keyword3", updateMessage);
+						data.put("keyword4", activity.get("activity_desc"));
 						wm.setData(data);
 						wm.setFormId(userInfo.get("user_id").toString());
-						wm.setTemplateId(templeateId);
+						wm.setTemplateId(templeateUpdateId);
 						wechatService.sendMessage(wm);
 					}
 					

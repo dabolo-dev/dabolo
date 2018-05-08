@@ -19,7 +19,8 @@ wechat:
   appid: 
   secret: 
   message: 
-    templeate-id: cg4ZoEJPM4eYw1aBIW83IAzL41q6uA2NEJpEJHLLI2I
+    templeate-update-id: cg4ZoEJPM4eYw1aBIW83IAzL41q6uA2NEJpEJHLLI2I
+    templeate-notify-id: iXMVvIlaUtBH9mVmJm2IW4JQ_IKJ4OjdhFzLK_tyXAU
     data: 测试内容
   
 token: 
