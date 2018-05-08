@@ -306,11 +306,11 @@ public class ActivityService implements IActivityService {
 								WechatMessage wm = new WechatMessage();
 								wm.setTouser(userInfo.get("third_id").toString());
 								Map<String,Object> data=new HashMap<String,Object>();
-								data.put("keyword1", activity.get("activity_title"));
-								data.put("keyword2", activity.get("activity_start"));
-								data.put("keyword3", activity.get("activity_location"));
-								data.put("keyword4", activity.get("activity_desc"));
-								data.put("keyword5", message);
+								data.put("keyword1", setPar("value",activity.get("activity_title")));
+								data.put("keyword2", setPar("value",activity.get("activity_start")));
+								data.put("keyword3", setPar("value",activity.get("activity_location")));
+								data.put("keyword4", setPar("value",activity.get("activity_desc")));
+								data.put("keyword5", setPar("value",message));
 								wm.setData(data);
 								wm.setFormId(userInfo.get("user_id").toString());
 								wm.setTemplateId(templeateNotifyId);
@@ -350,10 +350,10 @@ public class ActivityService implements IActivityService {
 						WechatMessage wm = new WechatMessage();
 						wm.setTouser(userInfo.get("third_id").toString());
 						Map<String,Object> data=new HashMap<String,Object>();
-						data.put("keyword1", activity.get("activity_title"));
-						data.put("keyword2", activity.get("activity_location"));
-						data.put("keyword3", updateMessage);
-						data.put("keyword4", activity.get("activity_desc"));
+						data.put("keyword1", setPar("value",activity.get("activity_title")));
+						data.put("keyword2", setPar("value",activity.get("activity_location")));
+						data.put("keyword3", setPar("value",updateMessage));
+						data.put("keyword4", setPar("value",activity.get("activity_desc")));
 						wm.setData(data);
 						wm.setFormId(userInfo.get("user_id").toString());
 						wm.setTemplateId(templeateUpdateId);
@@ -365,6 +365,11 @@ public class ActivityService implements IActivityService {
 		}
 		
 
+	}
+	private Map<String,Object> setPar(String key,Object value){
+		Map<String,Object> data=new HashMap<String,Object>();
+		data.put(key, value);
+		return data;
 	}
 
 }

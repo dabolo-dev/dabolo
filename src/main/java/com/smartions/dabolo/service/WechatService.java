@@ -29,7 +29,7 @@ public class WechatService implements IWechatService {
 	@Override
 	public boolean sendMessage(WechatMessage message) {
 
-		JSONObject jsonObject = HttpsUtils.sendHtpps("grant_type=client_credential&appid=" + wechat.getAppId() + "&secret=" + wechat.getSecret(),
+		JSONObject jsonObject = HttpsUtils.sendHtppsForGet("grant_type=client_credential&appid=" + wechat.getAppId() + "&secret=" + wechat.getSecret(),
 				access_token);
 		System.out.println("-->token");
 		System.out.println(jsonObject);
