@@ -36,7 +36,7 @@ public class WechatService implements IWechatService {
 		if (jsonObject.containsKey("access_token")) {
 			String token = jsonObject.getString("access_token");
 			JSONObject jsonReturnObject = HttpsUtils.sendHtpps("access_token="+token + "&touser=" + message.getTouser() + "&template_id="
-					+ message.getTemplateId() + "&data=" + message.getData() + "&form_id=" + message.getFormId(),
+					+ message.getTemplateId() + "&data=" + JSONObject.fromObject(message.getData()).toString() + "&form_id=" + message.getFormId(),
 					send_message);
 			System.out.println("-->send result");
 			System.out.println(jsonReturnObject);
