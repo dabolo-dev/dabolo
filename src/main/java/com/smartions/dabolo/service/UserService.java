@@ -413,4 +413,26 @@ public class UserService implements IUserService {
 		
 	}
 
+	@Override
+	public void attention(String userId, String activityId, boolean flag) {
+		Map<String, Object> map=userMapper.getUserAndActivity(userId, activityId);
+		Map<String, Object> userAndActivity=new HashMap<String,Object>();
+		if(map!=null) {//存在
+			userAndActivity.put("userId", userId);
+			userAndActivity.put("activityId", activityId);
+			userAndActivity.put("activity_and_user_attention", flag);
+			
+			userMapper.editUserAndActivity(userAndActivity);
+		}else{
+			if(flag) {
+				userAndActivity.put("activity_and_user_user_id", userId);
+				userAndActivity.put("activity_and_user_activity_id", activityId);
+				userAndActivity.put("activity_and_user_attention", flag);
+				userMapper.saveUserAndActivity(userAndActivity);
+			}
+		}
+		
+		
+	}
+
 }

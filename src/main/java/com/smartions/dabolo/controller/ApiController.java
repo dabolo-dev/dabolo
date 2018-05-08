@@ -671,4 +671,17 @@ public class ApiController {
 		}
 		return null;
 	}
+	
+	@GetMapping(value="user/attention")
+	public Map<String, Object> attention(@RequestParam(value = "activityid") String activityId,
+			@RequestParam(value = "flag") String flag, @RequestParam(value = "userid") String userId,
+			HttpServletRequest request, HttpServletResponse response) {
+		 Map<String, Object> result=new HashMap<String,Object>();
+		 result.put("flag", 0);
+		if (apiOauth(request, response)) {
+			userService.attention(userId, activityId, Boolean.parseBoolean(flag));
+			 result.put("flag", 1);
+		}
+		return result;
+	}
 }

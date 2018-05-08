@@ -16,4 +16,5 @@ public interface IUserService {
 	public List<Map<String,Object>> participateActivity(String userId);
 	public List<Map<String,Object>> attentionActivity(String userId);
 	public void commentActivity(Map<String, Object> result);
+	public void attention(String userId,String activityId,boolean flag);
 }
