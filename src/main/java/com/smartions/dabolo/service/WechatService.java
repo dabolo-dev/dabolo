@@ -14,7 +14,9 @@ public class WechatService implements IWechatService {
 	@Autowired
 	private Wechat wechat;
 	private String url = "https://api.weixin.qq.com/sns/jscode2session?";
+
 	private String access_token = "https://api.weixin.qq.com/cgi-bin/token?";
+
 	private String send_message = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?";
 
 	@Override
@@ -26,13 +28,18 @@ public class WechatService implements IWechatService {
 
 	@Override
 	public boolean sendMessage(WechatMessage message) {
+
 		JSONObject jsonObject = HttpsUtils.sendHtpps("grant_type=client_credential&appid=" + wechat.getAppId() + "&secret=" + wechat.getSecret(),
 				access_token);
+		System.out.println("-->token");
+		System.out.println(jsonObject);
 		if (jsonObject.containsKey("access_token")) {
 			String token = jsonObject.getString("access_token");
 			JSONObject jsonReturnObject = HttpsUtils.sendHtpps("access_token="+token + "&touser=" + message.getTouser() + "&template_id="
 					+ message.getTemplateId() + "&data=" + message.getData() + "&form_id=" + message.getFormId(),
 					send_message);
+			System.out.println("-->send result");
+			System.out.println(jsonReturnObject);
 			return jsonReturnObject.containsKey("errmsg") && "".equals(jsonReturnObject.getString("errmsg"));
 		}
 		return false;

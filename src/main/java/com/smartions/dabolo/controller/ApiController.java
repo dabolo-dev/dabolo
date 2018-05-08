@@ -498,8 +498,8 @@ public class ApiController {
 					}
 				}
 				activityService.saveActivity(inDataMap);
-				if (inDataMap.containsKey("limit") || inDataMap.containsKey("starttime") || inDataMap.containsKey("address")
-						|| (inDataMap.containsKey("status")&&"cancel".equals(json.getString("status")))) {
+				if (inDataMap.containsKey(Activity.ALLOW_PERSION) || inDataMap.containsKey(Activity.START) || inDataMap.containsKey(Activity.LOCATION)
+						|| (inDataMap.containsKey(Activity.STATUS)&&"cancel".equals(json.getString("status")))) {
 					activityService.sendMessage(activityId);
 					if(inDataMap.containsKey("starttime")) {
 						activityService.notifyPlanMessage();
