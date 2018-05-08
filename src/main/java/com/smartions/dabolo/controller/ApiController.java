@@ -682,7 +682,7 @@ public class ApiController {
 		return null;
 	}
 	
-	@GetMapping(value="user/attention")
+	@GetMapping(value="activity/attention")
 	public Map<String, Object> attention(@RequestParam(value = "activityid") String activityId,
 			@RequestParam(value = "flag") String flag, @RequestParam(value = "userid") String userId,
 			HttpServletRequest request, HttpServletResponse response) {
