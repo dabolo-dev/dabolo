@@ -150,11 +150,11 @@ public class ActivityService implements IActivityService {
 		try {
 			activityMapper.saveActivity(activityMap);
 			List<Map<String, Object>> labelList = (List<Map<String, Object>>) activityMap.get("labeList");
-			if (labelList.size() > 0) {
+			if (labelList!=null&&labelList.size() > 0) {
 				activityMapper.saveLabel(labelList);
 			}
 			List<Map<String, Object>> picList = (List<Map<String, Object>>) activityMap.get("picList");
-			if (picList.size() > 0) {
+			if (picList!=null&&picList.size() > 0) {
 				activityMapper.savePic(picList);
 			}
 			List<Map<String, Object>> typeList = (List<Map<String, Object>>) activityMap.get("typeList");
@@ -164,6 +164,7 @@ public class ActivityService implements IActivityService {
 
 			inDataMap.put("flag", 1);
 		} catch (Exception e) {
+			e.printStackTrace();
 			inDataMap.put("flag", 0);
 		} finally {
 			return inDataMap;
