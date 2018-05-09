@@ -4,7 +4,7 @@ server:
     context-path: /dabolo
 spring:
   datasource:
-    url: jdbc:mysql://192.168.0.109:3306/dabolo_design?characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.0.109:3306/dabolo_herry_design?characterEncoding=UTF-8
     username: root
     password: Passw00d
     driver-class-name: com.mysql.jdbc.Driver

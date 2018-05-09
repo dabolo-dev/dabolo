@@ -115,7 +115,7 @@
 			separator="," close="">
 			#{activityId}
 		</foreach>
-		)
+		) and pic_type='activity';
 	</select>
 	<select id="getLabelList" resultType="hashMap">
 		select label_id as
@@ -172,6 +172,9 @@
 	</delete>
 	<select id="getParticipateList" resultType="hashMap">
 	 select * from ActivityAndUser where activity_and_user_activity_id=#{activityId} and activity_and_user_participate=1;
+	</select>
+	<select id="getAttentionList" resultType="hashMap">
+	 select * from ActivityAndUser where activity_and_user_activity_id=#{activityId} and activity_and_user_attention=1;
 	</select>
 	<select id="getCountComment" resultType="Integer">
 	select count(*) as count from Comment where comment_object=#{activityId}
