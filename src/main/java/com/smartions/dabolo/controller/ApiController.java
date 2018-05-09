@@ -275,34 +275,38 @@ public class ApiController {
 				GeoHash ghash = new GeoHash(json.getJSONObject("address").getDouble("latitude"),
 						json.getJSONObject("address").getDouble("longitude"));
 				inDataMap.put(Activity.LOCATION_GEOHASH, ghash.getGeoHashBase32());
-				JSONArray lableList = json.getJSONArray("tag");
-				List<Map<String, Object>> lables = new ArrayList<Map<String, Object>>();
-				for (int i = 0; i < lableList.size(); i++) {
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("activity_and_lable_activity_id", activityId);
-					map.put("activity_and_label_label_name", lableList.getJSONObject(i).getString("name"));
-					lables.add(map);
+				if(json.containsKey("tag")) {
+					JSONArray lableList = json.getJSONArray("tag");
+					List<Map<String, Object>> lables = new ArrayList<Map<String, Object>>();
+					for (int i = 0; i < lableList.size(); i++) {
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("activity_and_lable_activity_id", activityId);
+						map.put("activity_and_label_label_name", lableList.getJSONObject(i).getString("name"));
+						lables.add(map);
+					}
+	
+					inDataMap.put("labeList", lables);
 				}
+				
+				if(json.containsKey("pic")) {
+					List<Map<String, Object>> pics = new ArrayList<Map<String, Object>>();
+					JSONArray picList = json.getJSONArray("pic");
+					for (int i = 0; i < picList.size(); i++) {
+						JSONObject jObject = picList.getJSONObject(i);
 
-				inDataMap.put("labeList", lables);
+						Map<String, Object> map = new HashMap<String, Object>();
 
-				List<Map<String, Object>> pics = new ArrayList<Map<String, Object>>();
-
-				JSONArray picList = json.getJSONArray("pic");
-				for (int i = 0; i < picList.size(); i++) {
-					JSONObject jObject = picList.getJSONObject(i);
-
-					Map<String, Object> map = new HashMap<String, Object>();
-
-					map.put("pic_id", RSAUtils.md5(jObject.getString("newname")));
-					map.put("pic_name", jObject.getString("newname"));
-					map.put("pic_creator", json.get("userid"));
-					map.put("pic_activity_id", activityId);
-					map.put("pic_face", jObject.getBoolean("iscover"));
-					map.put("pic_type", "activity");
-					pics.add(map);
+						map.put("pic_id", RSAUtils.md5(jObject.getString("newname")));
+						map.put("pic_name", jObject.getString("newname"));
+						map.put("pic_creator", json.get("userid"));
+						map.put("pic_activity_id", activityId);
+						map.put("pic_face", jObject.getBoolean("iscover"));
+						map.put("pic_type", "activity");
+						pics.add(map);
+					}
+					inDataMap.put("picList", pics);
 				}
-				inDataMap.put("picList", pics);
+				
 				JSONArray typeList = json.getJSONArray("atype");
 				List<Map<String, Object>> types = new ArrayList<Map<String, Object>>();
 				for (int i = 0; i < typeList.size(); i++) {
