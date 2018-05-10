@@ -60,7 +60,6 @@
 		ActivityAndUser(
 		activity_and_user_user_id,
 		activity_and_user_activity_id,
-		activity_and_user_time,
 		<if test="activity_and_user_participate != null">
 			activity_and_user_participate,
 		</if>
@@ -74,13 +73,13 @@
 			activity_and_user_persion_count,
 		</if>
 		<if test="activity_and_user_note != null">
-			activity_and_user_note
+			activity_and_user_note,
 		</if>
+		activity_and_user_time
 		)
 		values(
 		#{activity_and_user_user_id},
 		#{activity_and_user_activity_id},
-		now(),
 		<if test="activity_and_user_participate != null">
 			#{activity_and_user_participate},
 		</if>
@@ -94,8 +93,9 @@
 			#{activity_and_user_persion_count},
 		</if>
 		<if test="activity_and_user_note != null">
-			#{activity_and_user_note}
+			#{activity_and_user_note},
 		</if>
+		now()
 		);
 
 	</insert>
