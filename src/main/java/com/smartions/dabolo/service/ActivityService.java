@@ -52,7 +52,7 @@ public class ActivityService implements IActivityService {
 			long signupStart = dateToStamp(map.get("activity_sign_up_start").toString());
 			long sinupEnd = dateToStamp(map.get("activity_sign_up_end").toString());
 			if ("cancel".equals(map.get("activity_status")) || "finish".equals(map.get("activity_status"))
-					|| "draft".equals(map.get("activity_status"))) {
+					|| "draft".equals(map.get("activity_status")) || "processing".equals(map.get("activity_status"))) {
 				return;
 			}
 			// 在报名开始之前：发布中

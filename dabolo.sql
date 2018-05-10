@@ -19,7 +19,7 @@ CREATE TABLE `Activity` (
   `activity_allow_persion` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '活动人数限制，默认0为不限制',
   `activity_charge` enum('AA','charge','free') NOT NULL DEFAULT 'free' COMMENT '收费情况',
   `activity_location` varchar(255) NOT NULL COMMENT '活动地点',
-  `activity_note` varchar(255) DEFAULT NULL COMMENT '活动备注',
+  `activity_note` varchar(255) DEFAULT NULL COMMENT '取消活动的备注',
   `activity_is_public` bit(1) NOT NULL DEFAULT b'1' COMMENT '是否是公开活动',
   `activity_location_latitude` double NOT NULL COMMENT '活动地点经度',
   `activity_location_longitude` double NOT NULL COMMENT '活动地点维度',
@@ -66,11 +66,11 @@ CREATE TABLE `ActivityAndUser` (
   `activity_and_user_user_id` char(32) NOT NULL,
   `activity_and_user_activity_id` char(32) NOT NULL,
   `activity_and_user_time` datetime NOT NULL,
-  `activity_and_user_participate` bit(1) NOT NULL DEFAULT b'0',
-  `activity_and_user_praise` bit(1) NOT NULL DEFAULT b'0',
-  `activity_and_user_attention` bit(1) NOT NULL DEFAULT b'0',
-  `activity_and_user_signin` bit(1) NOT NULL DEFAULT b'0',
-  `activity_and_user_persion_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `activity_and_user_participate` bit(1) NOT NULL DEFAULT b'0' COMMENT '参与',
+  `activity_and_user_praise` bit(1) NOT NULL DEFAULT b'0' COMMENT '点赞',
+  `activity_and_user_attention` bit(1) NOT NULL DEFAULT b'0' COMMENT '关注',
+  `activity_and_user_signin` bit(1) NOT NULL DEFAULT b'0' COMMENT '签到',
+  `activity_and_user_persion_count` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '报名人数',
   `activity_and_user_note` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
