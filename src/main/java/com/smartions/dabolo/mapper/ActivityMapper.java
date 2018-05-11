@@ -26,6 +26,7 @@ public interface ActivityMapper {
 	List<Map<String,Object>> getTypeList();
 	
 	List<Map<String,Object>> getActivityList();
+	List<Map<String,Object>> getActivityListForIndex();
 	
 	int deletePic(@Param("picName")String picName);
 	int setCover(@Param("picName")String picName, @Param("activityId")String activityId);

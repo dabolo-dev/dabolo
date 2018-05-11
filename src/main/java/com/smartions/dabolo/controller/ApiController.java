@@ -462,11 +462,12 @@ public class ApiController {
 
 							Map<String, Object> map = new HashMap<String, Object>();
 
-							map.put("pic_id", RSAUtils.md5(jObject.getString("newname")));
-							map.put("pic_name", jObject.getString("newname"));
+							map.put("pic_id", RSAUtils.md5(jObject.getString("name")));
+							map.put("pic_name", jObject.getString("name"));
 							map.put("pic_creator", json.get("userid"));
 							map.put("pic_activity_id", activityId);
 							map.put("pic_face", jObject.getBoolean("iscover"));
+							map.put("pic_type", "activity");
 
 							picsNew.add(map);
 						}

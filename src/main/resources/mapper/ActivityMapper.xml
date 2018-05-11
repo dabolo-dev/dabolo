@@ -128,6 +128,9 @@
 	<select id="getActivityList" resultType="hashMap">
 		select * from Activity;
 	</select>
+	<select id="getActivityListForIndex" resultType="hashMap">
+		select * from Activity where activity_status in ("publish","processing","finish") and activity_is_public = 1
+	</select>
 	<delete id="deletePic">
 		delete from Picture where pic_name=#{picName}
 	</delete>

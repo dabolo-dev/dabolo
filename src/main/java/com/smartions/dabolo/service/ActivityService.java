@@ -38,6 +38,11 @@ public class ActivityService implements IActivityService {
 	private String message;
 
 	private Timer timer =null;
+	
+	private String[] paramArray= {Activity.TITLE,Activity.DESC,Activity.STATUS,Activity.SIGN_UP_START,Activity.SIGN_UP_END,Activity.START,Activity.END,
+			Activity.ALLOW_PERSION,Activity.CHARGE,Activity.LOCATION,Activity.LOCATION_latitude,Activity.LOCATION_longitude,Activity.LOCATION_GEOHASH,
+			Activity.NOTE,Activity.IS_PUBLIC
+			};
 
 	public static final long dateToStamp(String dateStr) throws ParseException {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -76,7 +81,10 @@ public class ActivityService implements IActivityService {
 
 	@Override
 	public List<Map<String, Object>> getActivityList() {
-		List<Map<String, Object>> activityList = activityMapper.getActivityList();
+//		List<Map<String, Object>> activityList = activityMapper.getActivityList();
+		
+		List<Map<String, Object>> activityList = activityMapper.getActivityListForIndex();//首页显示活动列表
+		
 		List<String> activityIds = new ArrayList<String>();
 		long now = System.currentTimeMillis();
 		for (Map<String, Object> map : activityList) {
@@ -202,34 +210,46 @@ public class ActivityService implements IActivityService {
 	@Transactional
 	public Map<String, Object> saveActivity(Map<String, Object> activityMap) {
 		Map<String, Object> inDataMap = new HashMap<String, Object>();
-		try { // 保存基本信息
-			activityMapper.editActivity(activityMap);
+		try { 
+			//如果活动相关属性没有修改，则不执行更新操作
+			boolean flg = false;
+			for (String param : paramArray) {
+				if(activityMap.containsKey(param)) {
+					flg = true;
+					break;
+				}
+			}
+			// 保存基本信息
+			if(flg) {
+				activityMapper.editActivity(activityMap);
+			}
+		
 			// 保存新增类型
 			List<Map<String, Object>> typeList = (List<Map<String, Object>>) activityMap.get("typeNewList");
-			if (typeList.size() > 0) {
+			if (typeList!=null && typeList.size() > 0) {
 				activityMapper.saveType(typeList);
 			}
 			// 删除类型
 			List<Map<String, Object>> typeRemoveList = (List<Map<String, Object>>) activityMap.get("typeRemoveList");
-			if (typeList.size() > 0) {
+			if (typeRemoveList!=null && typeRemoveList.size() > 0) {
 				activityMapper.removeType(typeRemoveList, activityMap.get(Activity.ID).toString());
 			}
 
 			// 保存新增标签
 			List<Map<String, Object>> labelList = (List<Map<String, Object>>) activityMap.get("labeNewList");
-			if (labelList.size() > 0) {
+			if (labelList!=null && labelList.size() > 0) {
 				activityMapper.saveLabel(labelList);
 			}
 
 			// 删除标签
 			List<Map<String, Object>> labeRemovelList = (List<Map<String, Object>>) activityMap.get("labeRemoveList");
-			if (labelList.size() > 0) {
+			if (labeRemovelList!=null && labeRemovelList.size() > 0) {
 				activityMapper.removeLabel(labeRemovelList, activityMap.get(Activity.ID).toString());
 			}
 
 			// 保存新增图片
 			List<Map<String, Object>> picList = (List<Map<String, Object>>) activityMap.get("picNewList");
-			if (picList.size() > 0) {
+			if (picList!=null && picList.size() > 0) {
 				activityMapper.savePic(picList);
 			}
 			inDataMap.put("flag", 1);
